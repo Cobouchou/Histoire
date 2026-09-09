@@ -443,7 +443,8 @@ const TYPES = {
   }
   h2 { font-size: 17px; font-weight: 600; margin: 6px 0 0; }
   .duree { color: var(--ink-3); font-size: 13px; margin: 2px 0 0; }
-  .resume { margin: 20px 0 0; max-width: 62ch; }
+  .fiche-accent { height: 3px; border-radius: 2px; margin: 18px 0 0; background: var(--accent); }
+  .resume { margin: 18px 0 0; max-width: 62ch; }
 
   .cle {
     margin: 22px 0 0; padding: 14px 16px; border-radius: 8px;
@@ -454,18 +455,22 @@ const TYPES = {
     font-size: 12px; font-weight: 600; color: var(--ink-3);
     margin: 30px 0 12px; letter-spacing: .01em;
   }
-  .chrono { margin: 0; }
-  .chrono div { display: grid; grid-template-columns: 152px 1fr; gap: 16px; padding: 6px 0; }
-  .chrono dt { color: var(--ink-2); font-size: 13.5px; }
-  .chrono dd { margin: 0; font-size: 14.5px; }
-  .gens { display: flex; flex-wrap: wrap; gap: 7px; }
-  .gens a {
-    font-size: 13px; padding: 4px 11px; border-radius: 999px;
-    background: #F1EFEA; color: var(--ink); text-decoration: none;
-    transition: background .12s ease;
+  .chrono { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .chrono li { display: flex; gap: 12px; }
+  .chrono li::before {
+    content: ""; flex: none; width: 6px; height: 6px; margin-top: 8px;
+    border-radius: 50%; background: var(--accent);
   }
-  .gens a:hover, .gens a:focus-visible { background: var(--line); }
-  .gens a:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .chrono p { margin: 0; font-size: 14.5px; line-height: 1.6; max-width: 62ch; }
+  .chrono .date { font-weight: 600; color: var(--ink); }
+  .gens { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .gens li { font-size: 14px; line-height: 1.4; }
+  .gens a {
+    color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent;
+  }
+  .gens a:hover, .gens a:focus-visible { border-bottom-color: var(--accent); }
+  .gens a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .gens .role { color: var(--ink-3); font-size: 13px; }
   .fin-texte { margin: 0; max-width: 62ch; }
 
   @media (max-width: 860px) {
@@ -475,7 +480,6 @@ const TYPES = {
     .item { flex: none; width: 190px; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
     .fiche { padding: 22px 18px; }
     .annees { font-size: 27px; }
-    .chrono div { grid-template-columns: 1fr; gap: 1px; padding: 8px 0; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
@@ -709,6 +713,7 @@ function construireFiche() {
 
   const art = document.createElement("article");
   art.className = "fiche";
+  art.style.setProperty("--accent", t.couleur);
 
   const entete = document.createElement("div");
   entete.className = "fiche-entete";
@@ -731,6 +736,10 @@ function construireFiche() {
   entete.append(bloc, et);
   art.appendChild(entete);
 
+  const accent = document.createElement("div");
+  accent.className = "fiche-accent";
+  art.appendChild(accent);
+
   const res = document.createElement("p");
   res.className = "resume";
   res.textContent = p.resume;
@@ -747,29 +756,42 @@ function construireFiche() {
 
   if (p.chrono && p.chrono.length) {
     art.appendChild(titre("Chronologie"));
-    const dl = document.createElement("dl");
-    dl.className = "chrono";
+    const liste = document.createElement("ul");
+    liste.className = "chrono";
     p.chrono.forEach(([date, fait]) => {
-      const ligne = document.createElement("div");
-      const dt = document.createElement("dt"); dt.textContent = date;
-      const dd = document.createElement("dd"); dd.textContent = fait;
-      ligne.append(dt, dd);
-      dl.appendChild(ligne);
+      const li = document.createElement("li");
+      const texte = document.createElement("p");
+      const dt = document.createElement("span");
+      dt.className = "date";
+      dt.textContent = date;
+      texte.append(dt, " — " + fait);
+      li.appendChild(texte);
+      liste.appendChild(li);
     });
-    art.appendChild(dl);
+    art.appendChild(liste);
   }
 
   if (p.gens && p.gens.length) {
     art.appendChild(titre("Personnalités"));
-    const g = document.createElement("div");
+    const g = document.createElement("ul");
     g.className = "gens";
-    p.gens.forEach(n => {
-      const s = document.createElement("a");
-      s.textContent = n;
-      s.href = lienWikipedia(n);
-      s.target = "_blank";
-      s.rel = "noopener noreferrer";
-      g.appendChild(s);
+    p.gens.forEach(personne => {
+      const { nom: n, role } = typeof personne === "string" ? { nom: personne, role: null } : { nom: personne.n, role: personne.r };
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.textContent = n;
+      a.href = lienWikipedia(n);
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      li.appendChild(a);
+      if (role) {
+        li.append(" ");
+        const r = document.createElement("span");
+        r.className = "role";
+        r.textContent = "— " + role;
+        li.appendChild(r);
+      }
+      g.appendChild(li);
     });
     art.appendChild(g);
   }
