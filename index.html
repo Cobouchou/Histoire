@@ -472,24 +472,18 @@ const TYPES = {
   .item-barre { height: 4px; border-radius: 2px; margin-top: 4px; }
 
   /* ---------- Détail ---------- */
-  .fiche { display: flex; flex-direction: column; gap: 14px; }
-  .bloc {
+  .fiche {
     background: var(--card); border: 1px solid var(--line);
-    border-radius: 12px; padding: 24px 26px 26px;
+    border-radius: 12px; overflow: hidden;
   }
-  .fiche-entete { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
-  .annees {
-    font-size: 34px; font-weight: 600; letter-spacing: -0.02em;
-    line-height: 1.1; margin: 0;
+  .fiche-entete { background: var(--accent); padding: 18px 26px 16px; }
+  .entete-titre {
+    margin: 0; font-size: 19px; font-weight: 700; color: #fff;
+    letter-spacing: -.005em; line-height: 1.3;
   }
-  .etiquette {
-    font-size: 12px; padding: 3px 10px; border-radius: 999px;
-    align-self: center; white-space: nowrap;
-  }
-  h2 { font-size: 17px; font-weight: 600; margin: 6px 0 0; }
-  .duree { color: var(--ink-3); font-size: 13px; margin: 2px 0 0; }
-  .fiche-accent { height: 3px; border-radius: 2px; margin: 18px 0 0; background: var(--accent); }
-  .resume { margin: 18px 0 0; max-width: 62ch; }
+  .entete-duree { margin: 4px 0 0; font-size: 12.5px; color: rgba(255,255,255,.75); }
+  .fiche-corps { padding: 22px 26px 26px; }
+  .resume { margin: 0; max-width: 62ch; }
 
   .cle {
     margin: 18px 0 0; padding: 14px 16px; border-radius: 8px;
@@ -497,9 +491,9 @@ const TYPES = {
   }
 
   h3 {
-    font-size: 12px; font-weight: 600; color: var(--ink-3);
-    margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
-    letter-spacing: .01em;
+    font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-fond);
+    margin: 26px -26px 16px; padding: 9px 26px;
   }
   .chrono { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
   .chrono li { display: flex; gap: 12px; }
@@ -517,7 +511,8 @@ const TYPES = {
   .gens a:hover, .gens a:focus-visible { border-bottom-color: var(--accent); }
   .gens a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
   .gens .role { color: var(--ink-3); font-size: 13px; }
-  .pied { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+  .pied { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 26px; }
+  .pied h3 { margin: 26px 0 16px; }
   .fin-texte { margin: 0; max-width: 62ch; }
 
   @media (max-width: 860px) {
@@ -525,8 +520,10 @@ const TYPES = {
     .grille { grid-template-columns: 1fr; gap: 20px; }
     .liste { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 6px; }
     .item { flex: none; width: 190px; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
-    .bloc { padding: 18px 18px 20px; }
-    .annees { font-size: 27px; }
+    .fiche-entete { padding: 16px 18px 14px; }
+    .fiche-corps { padding: 18px 18px 20px; }
+    h3 { margin-left: -18px; margin-right: -18px; padding-left: 18px; padding-right: 18px; }
+    .entete-titre { font-size: 17px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
@@ -801,39 +798,29 @@ function construireFiche() {
   const art = document.createElement("article");
   art.className = "fiche";
   art.style.setProperty("--accent", t.couleur);
+  art.style.setProperty("--accent-fond", t.fond);
 
-  /* --- Bloc en-tête : dates, nom, résumé, l'essentiel --- */
-  const blocEntete = document.createElement("div");
-  blocEntete.className = "bloc";
+  /* --- En-tête : bandeau plein format coloré selon le type --- */
   const entete = document.createElement("div");
   entete.className = "fiche-entete";
-  const infos = document.createElement("div");
-  const annees = document.createElement("p");
-  annees.className = "annees";
-  annees.textContent = p.dates;
-  const h2 = document.createElement("h2");
-  h2.textContent = p.nom;
+  const titreEntete = document.createElement("p");
+  titreEntete.className = "entete-titre";
+  titreEntete.textContent = p.dates + " " + p.nom;
   const d = document.createElement("p");
-  d.className = "duree";
+  d.className = "entete-duree";
   const ans = Math.round((p.fin - p.debut) * 10) / 10;
   d.textContent = ans < 1 ? "Moins d'un an" : ans + (ans > 1 ? " ans" : " an");
-  infos.append(annees, h2, d);
-  const et = document.createElement("span");
-  et.className = "etiquette";
-  et.style.background = t.fond;
-  et.style.color = t.couleur;
-  et.textContent = t.label;
-  entete.append(infos, et);
-  blocEntete.appendChild(entete);
+  entete.append(titreEntete, d);
+  art.appendChild(entete);
 
-  const accent = document.createElement("div");
-  accent.className = "fiche-accent";
-  blocEntete.appendChild(accent);
+  /* --- Corps : tout le reste, dans la même carte --- */
+  const corps = document.createElement("div");
+  corps.className = "fiche-corps";
 
   const res = document.createElement("p");
   res.className = "resume";
   res.textContent = p.resume;
-  blocEntete.appendChild(res);
+  corps.appendChild(res);
 
   if (p.cle) {
     const c = document.createElement("p");
@@ -841,15 +828,11 @@ function construireFiche() {
     c.style.background = t.fond;
     c.style.color = t.couleur;
     c.textContent = p.cle;
-    blocEntete.appendChild(c);
+    corps.appendChild(c);
   }
-  art.appendChild(blocEntete);
 
-  /* --- Bloc chronologie --- */
   if (p.chrono && p.chrono.length) {
-    const blocChrono = document.createElement("div");
-    blocChrono.className = "bloc";
-    blocChrono.appendChild(titre("Chronologie"));
+    corps.appendChild(titre("Chronologie"));
     const liste = document.createElement("ul");
     liste.className = "chrono";
     p.chrono.forEach(([date, fait]) => {
@@ -862,19 +845,17 @@ function construireFiche() {
       li.appendChild(texte);
       liste.appendChild(li);
     });
-    blocChrono.appendChild(liste);
-    art.appendChild(blocChrono);
+    corps.appendChild(liste);
   }
 
-  /* --- Blocs personnalités / événements, côte à côte --- */
+  /* --- Personnalités / événements, côte à côte --- */
   if ((p.gens && p.gens.length) || (p.evenements && p.evenements.length)) {
     const pied = document.createElement("div");
     pied.className = "pied";
 
     if (p.gens && p.gens.length) {
-      const blocGens = document.createElement("div");
-      blocGens.className = "bloc";
-      blocGens.appendChild(titre("Personnalités"));
+      const colGens = document.createElement("div");
+      colGens.appendChild(titre("Personnalités"));
       const g = document.createElement("ul");
       g.className = "gens";
       p.gens.forEach(personne => {
@@ -895,14 +876,13 @@ function construireFiche() {
         }
         g.appendChild(li);
       });
-      blocGens.appendChild(g);
-      pied.appendChild(blocGens);
+      colGens.appendChild(g);
+      pied.appendChild(colGens);
     }
 
     if (p.evenements && p.evenements.length) {
-      const blocEven = document.createElement("div");
-      blocEven.className = "bloc";
-      blocEven.appendChild(titre("Événements"));
+      const colEven = document.createElement("div");
+      colEven.appendChild(titre("Événements"));
       const ev = document.createElement("ul");
       ev.className = "gens";
       p.evenements.forEach(nom => {
@@ -915,25 +895,22 @@ function construireFiche() {
         li.appendChild(a);
         ev.appendChild(li);
       });
-      blocEven.appendChild(ev);
-      pied.appendChild(blocEven);
+      colEven.appendChild(ev);
+      pied.appendChild(colEven);
     }
 
-    art.appendChild(pied);
+    corps.appendChild(pied);
   }
 
-  /* --- Bloc chute du régime --- */
   if (p.fin_texte && p.fin_texte !== "—") {
-    const blocFin = document.createElement("div");
-    blocFin.className = "bloc";
-    blocFin.appendChild(titre(p.fin_titre || "Pourquoi le régime tombe"));
+    corps.appendChild(titre(p.fin_titre || "Pourquoi le régime tombe"));
     const f = document.createElement("p");
     f.className = "fin-texte";
     f.textContent = p.fin_texte;
-    blocFin.appendChild(f);
-    art.appendChild(blocFin);
+    corps.appendChild(f);
   }
 
+  art.appendChild(corps);
   cible.appendChild(art);
 }
 function titre(texte) {
