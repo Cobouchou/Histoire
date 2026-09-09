@@ -428,9 +428,10 @@ const TYPES = {
   .item-barre { height: 4px; border-radius: 2px; margin-top: 4px; }
 
   /* ---------- Détail ---------- */
-  .fiche {
+  .fiche { display: flex; flex-direction: column; gap: 14px; }
+  .bloc {
     background: var(--card); border: 1px solid var(--line);
-    border-radius: 12px; padding: 28px 30px 26px;
+    border-radius: 12px; padding: 24px 26px 26px;
   }
   .fiche-entete { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
   .annees {
@@ -447,13 +448,14 @@ const TYPES = {
   .resume { margin: 18px 0 0; max-width: 62ch; }
 
   .cle {
-    margin: 22px 0 0; padding: 14px 16px; border-radius: 8px;
+    margin: 18px 0 0; padding: 14px 16px; border-radius: 8px;
     font-size: 14.5px; max-width: 64ch;
   }
 
   h3 {
     font-size: 12px; font-weight: 600; color: var(--ink-3);
-    margin: 30px 0 12px; letter-spacing: .01em;
+    margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
+    letter-spacing: .01em;
   }
   .chrono { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
   .chrono li { display: flex; gap: 12px; }
@@ -471,6 +473,7 @@ const TYPES = {
   .gens a:hover, .gens a:focus-visible { border-bottom-color: var(--accent); }
   .gens a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
   .gens .role { color: var(--ink-3); font-size: 13px; }
+  .pied { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
   .fin-texte { margin: 0; max-width: 62ch; }
 
   @media (max-width: 860px) {
@@ -478,7 +481,7 @@ const TYPES = {
     .grille { grid-template-columns: 1fr; gap: 20px; }
     .liste { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 6px; }
     .item { flex: none; width: 190px; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
-    .fiche { padding: 22px 18px; }
+    .bloc { padding: 18px 18px 20px; }
     .annees { font-size: 27px; }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -715,9 +718,12 @@ function construireFiche() {
   art.className = "fiche";
   art.style.setProperty("--accent", t.couleur);
 
+  /* --- Bloc en-tête : dates, nom, résumé, l'essentiel --- */
+  const blocEntete = document.createElement("div");
+  blocEntete.className = "bloc";
   const entete = document.createElement("div");
   entete.className = "fiche-entete";
-  const bloc = document.createElement("div");
+  const infos = document.createElement("div");
   const annees = document.createElement("p");
   annees.className = "annees";
   annees.textContent = p.dates;
@@ -727,23 +733,23 @@ function construireFiche() {
   d.className = "duree";
   const ans = Math.round((p.fin - p.debut) * 10) / 10;
   d.textContent = ans < 1 ? "Moins d'un an" : ans + (ans > 1 ? " ans" : " an");
-  bloc.append(annees, h2, d);
+  infos.append(annees, h2, d);
   const et = document.createElement("span");
   et.className = "etiquette";
   et.style.background = t.fond;
   et.style.color = t.couleur;
   et.textContent = t.label;
-  entete.append(bloc, et);
-  art.appendChild(entete);
+  entete.append(infos, et);
+  blocEntete.appendChild(entete);
 
   const accent = document.createElement("div");
   accent.className = "fiche-accent";
-  art.appendChild(accent);
+  blocEntete.appendChild(accent);
 
   const res = document.createElement("p");
   res.className = "resume";
   res.textContent = p.resume;
-  art.appendChild(res);
+  blocEntete.appendChild(res);
 
   if (p.cle) {
     const c = document.createElement("p");
@@ -751,11 +757,15 @@ function construireFiche() {
     c.style.background = t.fond;
     c.style.color = t.couleur;
     c.textContent = p.cle;
-    art.appendChild(c);
+    blocEntete.appendChild(c);
   }
+  art.appendChild(blocEntete);
 
+  /* --- Bloc chronologie --- */
   if (p.chrono && p.chrono.length) {
-    art.appendChild(titre("Chronologie"));
+    const blocChrono = document.createElement("div");
+    blocChrono.className = "bloc";
+    blocChrono.appendChild(titre("Chronologie"));
     const liste = document.createElement("ul");
     liste.className = "chrono";
     p.chrono.forEach(([date, fait]) => {
@@ -768,40 +778,76 @@ function construireFiche() {
       li.appendChild(texte);
       liste.appendChild(li);
     });
-    art.appendChild(liste);
+    blocChrono.appendChild(liste);
+    art.appendChild(blocChrono);
   }
 
-  if (p.gens && p.gens.length) {
-    art.appendChild(titre("Personnalités"));
-    const g = document.createElement("ul");
-    g.className = "gens";
-    p.gens.forEach(personne => {
-      const { nom: n, role } = typeof personne === "string" ? { nom: personne, role: null } : { nom: personne.n, role: personne.r };
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.textContent = n;
-      a.href = lienWikipedia(n);
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      li.appendChild(a);
-      if (role) {
-        li.append(" ");
-        const r = document.createElement("span");
-        r.className = "role";
-        r.textContent = "— " + role;
-        li.appendChild(r);
-      }
-      g.appendChild(li);
-    });
-    art.appendChild(g);
+  /* --- Blocs personnalités / événements, côte à côte --- */
+  if ((p.gens && p.gens.length) || (p.evenements && p.evenements.length)) {
+    const pied = document.createElement("div");
+    pied.className = "pied";
+
+    if (p.gens && p.gens.length) {
+      const blocGens = document.createElement("div");
+      blocGens.className = "bloc";
+      blocGens.appendChild(titre("Personnalités"));
+      const g = document.createElement("ul");
+      g.className = "gens";
+      p.gens.forEach(personne => {
+        const { nom: n, role } = typeof personne === "string" ? { nom: personne, role: null } : { nom: personne.n, role: personne.r };
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.textContent = n;
+        a.href = lienWikipedia(n);
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        li.appendChild(a);
+        if (role) {
+          li.append(" ");
+          const r = document.createElement("span");
+          r.className = "role";
+          r.textContent = "— " + role;
+          li.appendChild(r);
+        }
+        g.appendChild(li);
+      });
+      blocGens.appendChild(g);
+      pied.appendChild(blocGens);
+    }
+
+    if (p.evenements && p.evenements.length) {
+      const blocEven = document.createElement("div");
+      blocEven.className = "bloc";
+      blocEven.appendChild(titre("Événements"));
+      const ev = document.createElement("ul");
+      ev.className = "gens";
+      p.evenements.forEach(nom => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.textContent = nom;
+        a.href = lienWikipedia(nom);
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        li.appendChild(a);
+        ev.appendChild(li);
+      });
+      blocEven.appendChild(ev);
+      pied.appendChild(blocEven);
+    }
+
+    art.appendChild(pied);
   }
 
+  /* --- Bloc chute du régime --- */
   if (p.fin_texte && p.fin_texte !== "—") {
-    art.appendChild(titre("Pourquoi le régime tombe"));
+    const blocFin = document.createElement("div");
+    blocFin.className = "bloc";
+    blocFin.appendChild(titre("Pourquoi le régime tombe"));
     const f = document.createElement("p");
     f.className = "fin-texte";
     f.textContent = p.fin_texte;
-    art.appendChild(f);
+    blocFin.appendChild(f);
+    art.appendChild(blocFin);
   }
 
   cible.appendChild(art);
