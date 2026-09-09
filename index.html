@@ -332,11 +332,21 @@ const TYPES = {
   .soustitre { color: var(--ink-2); font-size: 14px; margin: 0; }
 
   /* ---------- Frise ---------- */
-  .frise-bloc { margin: 28px 0 8px; position: relative; }
+  .frise-toolbar { display: flex; justify-content: flex-end; gap: 4px; margin: 28px 0 6px; }
+  .zoom-btn {
+    width: 24px; height: 24px; padding: 0; display: flex; align-items: center; justify-content: center;
+    font: inherit; font-size: 15px; line-height: 1; cursor: pointer;
+    background: var(--card); color: var(--ink-2);
+    border: 1px solid var(--line); border-radius: 6px;
+  }
+  .zoom-btn:hover { border-color: var(--ink-3); color: var(--ink); }
+  .zoom-btn:active { background: #F1EFEA; }
+  .frise-bloc { margin: 0 0 8px; position: relative; }
   .frise-scroll {
     overflow-x: auto; overflow-y: hidden;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
+    touch-action: pan-x;
   }
   .frise-bloc::after {
     content: ""; position: absolute; top: 0; right: 0; height: 52px; width: 28px;
@@ -397,7 +407,6 @@ const TYPES = {
   .puce[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
   .pastille { width: 8px; height: 8px; border-radius: 50%; }
   .puce[aria-pressed="true"] .pastille { box-shadow: 0 0 0 1.5px rgba(255,255,255,.5); }
-  .filtres .droite { margin-left: auto; }
 
   /* ---------- Grille ---------- */
   .grille { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
@@ -417,10 +426,6 @@ const TYPES = {
   .item-annees { font-size: 12px; color: var(--ink-3); }
   .item-nom { font-size: 14px; font-weight: 500; line-height: 1.35; }
   .item-barre { height: 4px; border-radius: 2px; margin-top: 4px; }
-  .a-revoir {
-    width: 6px; height: 6px; border-radius: 50%; background: #C4692F;
-    flex: none; align-self: center; margin-left: auto;
-  }
 
   /* ---------- Détail ---------- */
   .fiche {
@@ -454,32 +459,14 @@ const TYPES = {
   .chrono dt { color: var(--ink-2); font-size: 13.5px; }
   .chrono dd { margin: 0; font-size: 14.5px; }
   .gens { display: flex; flex-wrap: wrap; gap: 7px; }
-  .gens span {
+  .gens a {
     font-size: 13px; padding: 4px 11px; border-radius: 999px;
-    background: #F1EFEA; color: var(--ink);
+    background: #F1EFEA; color: var(--ink); text-decoration: none;
+    transition: background .12s ease;
   }
+  .gens a:hover, .gens a:focus-visible { background: var(--line); }
+  .gens a:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
   .fin-texte { margin: 0; max-width: 62ch; }
-
-  .pied {
-    margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line);
-    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
-  }
-  .bouton {
-    font: inherit; font-size: 13.5px; cursor: pointer;
-    background: var(--ink); color: #fff; border: 0;
-    border-radius: 8px; padding: 8px 16px;
-  }
-  .bouton:hover { background: #333; }
-  .bouton:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  .revu-info { font-size: 13px; color: var(--ink-2); }
-  textarea {
-    font: inherit; font-size: 14px; width: 100%; max-width: 62ch;
-    min-height: 82px; resize: vertical;
-    border: 1px solid var(--line); border-radius: 8px;
-    padding: 11px 13px; background: #FCFBF9; color: var(--ink);
-  }
-  textarea:focus { outline: 2px solid var(--ink); outline-offset: -1px; border-color: transparent; }
-  .etat-sauvegarde { font-size: 12.5px; color: var(--ink-3); margin: 7px 0 0; min-height: 18px; }
 
   @media (max-width: 860px) {
     .wrap { padding: 28px 16px 60px; }
@@ -500,6 +487,10 @@ const TYPES = {
     <h1>Régimes politiques français</h1>
     <p class="soustitre">Quatorze régimes en deux cent trente-sept ans. Chaque barre est proportionnelle à sa durée.</p>
 
+    <div class="frise-toolbar">
+      <button type="button" class="zoom-btn" id="zoomMoins" aria-label="Réduire la frise">−</button>
+      <button type="button" class="zoom-btn" id="zoomPlus" aria-label="Agrandir la frise">+</button>
+    </div>
     <div class="frise-bloc">
       <div class="frise-scroll" id="friseScroll">
         <div class="frise" id="frise" role="group" aria-label="Frise chronologique des régimes"></div>
@@ -517,70 +508,39 @@ const TYPES = {
 </div>
 
 <script>
-const CLE_STOCKAGE = "regimes-france";
 const DEBUT = 1789, FIN = 2026, SPAN = FIN - DEBUT;
-const SEUIL_REVISION = 30; // jours avant qu'une fiche repasse « à revoir »
 
-let etat = { revisions: {}, notes: {} };
 let selection = PERIODES[0].id;
 let filtre = "tous";
 
-/* ---------- Persistance ----------
-   Deux contextes possibles : la page ouverte dans Claude (window.storage)
-   ou hébergée sur le web / ouverte en local (stockage du navigateur).
-   On tente le premier, on retombe sur le second.                        */
-async function charger() {
-  let brut = null;
-  try {
-    if (window.storage) {
-      const r = await window.storage.get(CLE_STOCKAGE);
-      if (r && r.value) brut = r.value;
-    }
-  } catch (e) { /* clé absente ou stockage Claude indisponible */ }
-
-  if (brut === null) {
-    try { brut = localStorage.getItem(CLE_STOCKAGE); } catch (e) { /* mode privé */ }
-  }
-
-  if (brut) {
-    try {
-      etat = Object.assign({ revisions: {}, notes: {} }, JSON.parse(brut));
-    } catch (e) { /* données illisibles : on repart à zéro */ }
-  }
-}
-
-async function sauver() {
-  const json = JSON.stringify(etat);
-  let ok = false;
-
-  try {
-    if (window.storage) { await window.storage.set(CLE_STOCKAGE, json); ok = true; }
-  } catch (e) { /* on essaie l'autre voie */ }
-
-  try { localStorage.setItem(CLE_STOCKAGE, json); ok = true; } catch (e) { /* mode privé */ }
-
-  return ok;
-}
-
 /* ---------- Utilitaires ---------- */
 const duree = p => Math.max(p.fin - p.debut, 0.3);
-const joursDepuis = iso => Math.floor((Date.now() - new Date(iso)) / 86400000);
-function aRevoir(p) {
-  const d = etat.revisions[p.id];
-  return !d || joursDepuis(d) >= SEUIL_REVISION;
-}
-function texteRevision(p) {
-  const d = etat.revisions[p.id];
-  if (!d) return "Jamais révisé";
-  const j = joursDepuis(d);
-  if (j === 0) return "Révisé aujourd'hui";
-  if (j === 1) return "Révisé hier";
-  return "Révisé il y a " + j + " jours";
-}
 const visible = p => filtre === "tous" || p.type === filtre;
 
+/* Quelques noms de la frise pointent, en toute logique, vers un article
+   Wikipédia différent du nom affiché (le nom d'un titre porté avant un
+   sacre, un patronyme qui désigne d'abord une famille, etc.). */
+const LIENS_SPECIAUX = {
+  "Bonaparte": "Napoléon Ier",
+  "Comte d'Artois": "Charles X",
+  "Cavaignac": "Eugène Cavaignac"
+};
+function lienWikipedia(nom) {
+  const cible = (LIENS_SPECIAUX[nom] || nom).replace(/ /g, "_");
+  return "https://fr.wikipedia.org/wiki/" + encodeURIComponent(cible);
+}
+
 /* ---------- Frise ---------- */
-const PX_PAR_AN = 16; // largeur d'une année sur la frise déroulante
+let PX_PAR_AN = 16; // largeur d'une année sur la frise déroulante — ajustable au pincement
+const PX_PAR_AN_MIN = 6, PX_PAR_AN_MAX = 60;
+
+function intervalleGraduation() {
+  // choisit un pas rond assez grand pour que les graduations ne se chevauchent pas
+  const paliers = [5, 10, 20, 25, 50, 100];
+  for (const p of paliers) if (p * PX_PAR_AN >= 42) return p;
+  return 200;
+}
+
 function construireFrise() {
   const largeurTotale = SPAN * PX_PAR_AN;
 
@@ -617,12 +577,71 @@ function construireFrise() {
   const r = document.getElementById("regle");
   r.innerHTML = "";
   r.style.width = largeurTotale + "px";
-  for (let an = 1790; an < FIN; an += 10) {
+  const intervalle = intervalleGraduation();
+  const premier = Math.ceil(DEBUT / intervalle) * intervalle;
+  for (let an = premier; an < FIN; an += intervalle) {
     const s = document.createElement("span");
     s.textContent = an;
     s.style.left = ((an - DEBUT) * PX_PAR_AN) + "px";
     r.appendChild(s);
   }
+  appliquerEtatFrise();
+}
+
+/* ---------- Zoom de la frise (pincement tactile, trackpad, boutons) ---------- */
+function definirZoom(nouveauPx, ancrageAnnee, xEcran) {
+  const conteneur = document.getElementById("friseScroll");
+  const rect = conteneur.getBoundingClientRect();
+  PX_PAR_AN = Math.min(PX_PAR_AN_MAX, Math.max(PX_PAR_AN_MIN, nouveauPx));
+  construireFrise();
+  conteneur.scrollLeft = (ancrageAnnee - DEBUT) * PX_PAR_AN - (xEcran - rect.left);
+}
+function zoomBouton(facteur) {
+  const conteneur = document.getElementById("friseScroll");
+  const rect = conteneur.getBoundingClientRect();
+  const centre = rect.left + rect.width / 2;
+  const ancrageAnnee = DEBUT + (conteneur.scrollLeft + rect.width / 2) / PX_PAR_AN;
+  definirZoom(PX_PAR_AN * facteur, ancrageAnnee, centre);
+}
+function initialiserZoomFrise() {
+  const conteneur = document.getElementById("friseScroll");
+  let distanceDepart = null, pxDepart = null, ancrageAnnee = null;
+  const distance = (t0, t1) => Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+  const milieu = (t0, t1) => (t0.clientX + t1.clientX) / 2;
+
+  conteneur.addEventListener("touchstart", e => {
+    if (e.touches.length === 2) {
+      distanceDepart = distance(e.touches[0], e.touches[1]);
+      pxDepart = PX_PAR_AN;
+      const rect = conteneur.getBoundingClientRect();
+      const x = milieu(e.touches[0], e.touches[1]) - rect.left + conteneur.scrollLeft;
+      ancrageAnnee = DEBUT + x / PX_PAR_AN;
+    }
+  }, { passive: true });
+
+  conteneur.addEventListener("touchmove", e => {
+    if (e.touches.length === 2 && distanceDepart) {
+      e.preventDefault();
+      const ratio = distance(e.touches[0], e.touches[1]) / distanceDepart;
+      definirZoom(pxDepart * ratio, ancrageAnnee, milieu(e.touches[0], e.touches[1]));
+    }
+  }, { passive: false });
+
+  const relacher = () => { distanceDepart = null; pxDepart = null; };
+  conteneur.addEventListener("touchend", relacher);
+  conteneur.addEventListener("touchcancel", relacher);
+
+  // Trackpad (pincement = molette + Ctrl dans Chrome/Safari/Firefox)
+  conteneur.addEventListener("wheel", e => {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+    const rect = conteneur.getBoundingClientRect();
+    const ancrage = DEBUT + (conteneur.scrollLeft + (e.clientX - rect.left)) / PX_PAR_AN;
+    definirZoom(PX_PAR_AN * Math.exp(-e.deltaY * 0.012), ancrage, e.clientX);
+  }, { passive: false });
+
+  document.getElementById("zoomMoins").onclick = () => zoomBouton(1 / 1.35);
+  document.getElementById("zoomPlus").onclick = () => zoomBouton(1.35);
 }
 
 /* ---------- Filtres ---------- */
@@ -646,17 +665,6 @@ function construireFiltres() {
     b.onclick = () => { filtre = val; rendre(); };
     c.appendChild(b);
   });
-
-  const rev = document.createElement("button");
-  rev.className = "puce droite";
-  rev.textContent = "Réviser au hasard";
-  rev.onclick = () => {
-    const pool = PERIODES.filter(p => visible(p) && aRevoir(p));
-    const source = pool.length ? pool : PERIODES.filter(visible);
-    if (!source.length) return;
-    choisir(source[Math.floor(Math.random() * source.length)].id);
-  };
-  c.appendChild(rev);
 }
 
 /* ---------- Liste ---------- */
@@ -677,12 +685,6 @@ function construireListe() {
     an.className = "item-annees";
     an.textContent = p.dates;
     haut.appendChild(an);
-    if (aRevoir(p)) {
-      const dot = document.createElement("i");
-      dot.className = "a-revoir";
-      dot.title = "À revoir";
-      haut.appendChild(dot);
-    }
 
     const nom = document.createElement("div");
     nom.className = "item-nom";
@@ -762,8 +764,11 @@ function construireFiche() {
     const g = document.createElement("div");
     g.className = "gens";
     p.gens.forEach(n => {
-      const s = document.createElement("span");
+      const s = document.createElement("a");
       s.textContent = n;
+      s.href = lienWikipedia(n);
+      s.target = "_blank";
+      s.rel = "noopener noreferrer";
       g.appendChild(s);
     });
     art.appendChild(g);
@@ -776,41 +781,6 @@ function construireFiche() {
     f.textContent = p.fin_texte;
     art.appendChild(f);
   }
-
-  art.appendChild(titre("Mes notes"));
-  const ta = document.createElement("textarea");
-  ta.value = etat.notes[p.id] || "";
-  ta.placeholder = "Ce que vous voulez retenir, un lien avec une autre période, une lecture…";
-  ta.setAttribute("aria-label", "Notes personnelles sur " + p.nom);
-  const info = document.createElement("p");
-  info.className = "etat-sauvegarde";
-  let minuteur;
-  ta.oninput = () => {
-    etat.notes[p.id] = ta.value;
-    clearTimeout(minuteur);
-    info.textContent = "";
-    minuteur = setTimeout(async () => {
-      info.textContent = (await sauver()) ? "Note enregistrée" : "Enregistrement indisponible dans ce contexte";
-    }, 600);
-  };
-  art.append(ta, info);
-
-  const pied = document.createElement("div");
-  pied.className = "pied";
-  const bt = document.createElement("button");
-  bt.className = "bouton";
-  bt.textContent = "Marquer comme révisé";
-  const txt = document.createElement("span");
-  txt.className = "revu-info";
-  txt.textContent = texteRevision(p);
-  bt.onclick = async () => {
-    etat.revisions[p.id] = new Date().toISOString();
-    await sauver();
-    txt.textContent = texteRevision(p);
-    construireListe();
-  };
-  pied.append(bt, txt);
-  art.appendChild(pied);
 
   cible.appendChild(art);
 }
@@ -828,20 +798,23 @@ function choisir(id) {
     document.getElementById("fiche").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }
-function rendre() {
-  construireFiltres();
-  construireListe();
-  construireFiche();
+function appliquerEtatFrise() {
   document.querySelectorAll("#frise .seg").forEach((s, i) => {
     const p = PERIODES[i];
     s.setAttribute("aria-pressed", p.id === selection);
     s.classList.toggle("estompe", !visible(p));
   });
 }
+function rendre() {
+  construireFiltres();
+  construireListe();
+  construireFiche();
+  appliquerEtatFrise();
+}
 
-(async function () {
-  await charger();
+(function () {
   construireFrise();
   rendre();
+  initialiserZoomFrise();
 })();
 </script>
