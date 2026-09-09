@@ -1,0 +1,799 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Régimes politiques français — 1789 à aujourd'hui</title>
+<meta name="theme-color" content="#FAFAF8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Régimes">
+
+<script>
+/* =========================================================================
+   CONTENU — tout est ici. Pour ajouter ou modifier une fiche, éditez ce
+   tableau et rien d'autre. Chaque champ est optionnel sauf id, debut, fin,
+   nom et type.
+   type : "monarchie" | "republique" | "empire" | "transition"
+   ========================================================================= */
+const PERIODES = [
+{
+  id: "monarchie-constitutionnelle",
+  debut: 1789, fin: 1792, type: "monarchie",
+  nom: "Monarchie constitutionnelle",
+  dates: "1789 – 1792",
+  resume: "La Révolution ne commence pas en république. Louis XVI reste roi mais partage désormais le pouvoir avec une Assemblée élue. Le régime tient trois ans et meurt de deux choses : la fuite du roi et l'entrée en guerre.",
+  cle: "Le point de bascule est Varennes. Tant que le roi joue le jeu, la monarchie constitutionnelle est crédible ; le jour où il fuit, elle ne l'est plus.",
+  chrono: [
+    ["5 mai 1789", "Ouverture des États généraux à Versailles"],
+    ["17 juin 1789", "Le Tiers état se proclame Assemblée nationale"],
+    ["20 juin 1789", "Serment du Jeu de paume"],
+    ["14 juillet 1789", "Prise de la Bastille"],
+    ["4 août 1789", "Abolition des privilèges"],
+    ["26 août 1789", "Déclaration des droits de l'homme et du citoyen"],
+    ["Octobre 1789", "Marche des femmes sur Versailles ; le roi est ramené à Paris"],
+    ["Juillet 1790", "Constitution civile du clergé — rupture avec Rome"],
+    ["20-21 juin 1791", "Fuite à Varennes"],
+    ["3 septembre 1791", "Adoption de la Constitution"],
+    ["20 avril 1792", "Déclaration de guerre à l'Autriche"],
+    ["10 août 1792", "Prise des Tuileries, suspension du roi"]
+  ],
+  gens: ["Louis XVI", "La Fayette", "Mirabeau", "Barnave", "Brissot"],
+  fin_texte: "La guerre tourne mal, le roi est soupçonné de trahison. La journée du 10 août 1792 emporte la monarchie."
+},
+{
+  id: "premiere-republique",
+  debut: 1792, fin: 1804, type: "republique",
+  nom: "Première République",
+  dates: "1792 – 1804",
+  resume: "Trois régimes sous un seul nom : la Convention, le Directoire, puis le Consulat. Bonaparte vide la République de son contenu avant de la remplacer officiellement.",
+  cle: "Cette république naît en guerre et invente la mobilisation totale. C'est ce qui produit à la fois la Terreur et l'armée qui portera Bonaparte au pouvoir.",
+  chrono: [
+    ["21 septembre 1792", "Abolition de la royauté, proclamation de la République"],
+    ["21 janvier 1793", "Exécution de Louis XVI"],
+    ["Avril 1793", "Création du Comité de salut public"],
+    ["Sept. 1793 – juill. 1794", "La Terreur"],
+    ["27 juillet 1794", "9 thermidor : chute de Robespierre"],
+    ["26 octobre 1795", "Installation du Directoire"],
+    ["9 novembre 1799", "18 brumaire : coup d'État de Bonaparte, Consulat"],
+    ["1801", "Concordat avec le Saint-Siège"],
+    ["1804", "Promulgation du Code civil"]
+  ],
+  gens: ["Robespierre", "Danton", "Saint-Just", "Marat", "Barras", "Bonaparte"],
+  fin_texte: "Le Consulat à vie prépare le terrain. En mai 1804, Bonaparte est proclamé empereur des Français."
+},
+{
+  id: "premier-empire",
+  debut: 1804, fin: 1814, type: "empire",
+  nom: "Premier Empire",
+  dates: "1804 – 1814",
+  resume: "Napoléon Ier domine l'Europe pendant huit ans, puis s'effondre en deux. L'Empire lègue à la France ses institutions administratives et son droit civil.",
+  cle: "L'Empire gagne toutes ses batailles rangées jusqu'à ce que l'Espagne et la Russie révèlent qu'il ne sait pas gagner une guerre d'occupation.",
+  chrono: [
+    ["2 décembre 1804", "Sacre à Notre-Dame"],
+    ["2 décembre 1805", "Austerlitz"],
+    ["1806", "Mise en place du Blocus continental"],
+    ["1808", "Début de la guerre d'Espagne"],
+    ["1812", "Campagne de Russie"],
+    ["Octobre 1813", "Défaite de Leipzig"],
+    ["6 avril 1814", "Abdication de Fontainebleau"]
+  ],
+  gens: ["Napoléon Ier", "Talleyrand", "Fouché", "Joséphine", "Ney", "Davout"],
+  fin_texte: "Campagne de France, entrée des coalisés dans Paris, abdication et exil à l'île d'Elbe."
+},
+{
+  id: "premiere-restauration",
+  debut: 1814, fin: 1815, type: "monarchie",
+  nom: "Première Restauration",
+  dates: "1814 – 1815",
+  resume: "Louis XVIII, frère de Louis XVI, revient sur le trône dans les bagages des coalisés. Il octroie une Charte qui conserve l'essentiel de l'héritage révolutionnaire. Onze mois au total.",
+  cle: "La Charte est « octroyée », pas votée. Le roi concède des libertés, il ne reconnaît pas qu'elles lui sont opposables — toute la tension du siècle est là.",
+  chrono: [
+    ["6 avril 1814", "Le Sénat rappelle Louis XVIII"],
+    ["4 juin 1814", "Charte constitutionnelle"],
+    ["1er mars 1815", "Napoléon débarque à Golfe-Juan"],
+    ["20 mars 1815", "Louis XVIII fuit à Gand"]
+  ],
+  gens: ["Louis XVIII", "Talleyrand", "Comte d'Artois"],
+  fin_texte: "Le retour de Napoléon de l'île d'Elbe, sans qu'un coup de feu soit tiré contre lui."
+},
+{
+  id: "cent-jours",
+  debut: 1815, fin: 1815.3, type: "transition",
+  nom: "Les Cent-Jours",
+  dates: "mars – juillet 1815",
+  resume: "Napoléon reprend le pouvoir sans combat, tente un empire libéral avec l'Acte additionnel, et perd tout à Waterloo en moins de trois mois.",
+  cle: "Le nom vient de la durée exacte entre le retour du roi à Paris et son second retour : 20 mars – 8 juillet 1815.",
+  chrono: [
+    ["1er mars 1815", "Débarquement à Golfe-Juan"],
+    ["20 mars 1815", "Entrée aux Tuileries"],
+    ["22 avril 1815", "Acte additionnel aux constitutions de l'Empire"],
+    ["18 juin 1815", "Waterloo"],
+    ["22 juin 1815", "Seconde abdication"]
+  ],
+  gens: ["Napoléon Ier", "Ney", "Benjamin Constant", "Wellington", "Blücher"],
+  fin_texte: "Waterloo, puis la déportation à Sainte-Hélène."
+},
+{
+  id: "seconde-restauration",
+  debut: 1815, fin: 1830, type: "monarchie",
+  nom: "Seconde Restauration",
+  dates: "1815 – 1830",
+  resume: "Louis XVIII puis Charles X. Un régime parlementaire censitaire tiraillé entre ultras et libéraux, qui finit par tenter le passage en force contre sa propre Charte.",
+  cle: "Charles X ne tombe pas pour avoir été réactionnaire, mais pour avoir suspendu la Charte par ordonnance. La limite du régime était constitutionnelle.",
+  chrono: [
+    ["8 juillet 1815", "Retour de Louis XVIII après les Cent-Jours"],
+    ["Juin – octobre 1815", "Terreur blanche : massacres contre les bonapartistes"],
+    ["Août 1815", "Les ultras triomphent : la « Chambre introuvable »"],
+    ["Novembre 1815", "Second traité de Paris"],
+    ["1820", "Assassinat du duc de Berry, virage à droite"],
+    ["1824", "Avènement de Charles X"],
+    ["Juillet 1830", "Prise d'Alger"],
+    ["25 juillet 1830", "Ordonnances de Saint-Cloud"],
+    ["27-29 juillet 1830", "Les Trois Glorieuses"]
+  ],
+  gens: ["Louis XVIII", "Charles X", "Villèle", "Decazes", "Chateaubriand"],
+  fin_texte: "Les Trois Glorieuses. Charles X abdique, la couronne passe à la branche d'Orléans."
+},
+{
+  id: "monarchie-juillet",
+  debut: 1830, fin: 1848, type: "monarchie",
+  nom: "Monarchie de Juillet",
+  dates: "1830 – 1848",
+  resume: "Louis-Philippe est roi « des Français », pas « de France ». Monarchie bourgeoise et censitaire, économiquement prospère, politiquement sourde à la demande d'élargissement du suffrage.",
+  cle: "Le « enrichissez-vous » de Guizot résume l'erreur du régime : répondre par l'économie à une demande qui était politique.",
+  chrono: [
+    ["9 août 1830", "Louis-Philippe roi des Français"],
+    ["1831 et 1834", "Révoltes des canuts à Lyon"],
+    ["1840", "Retour des cendres de Napoléon aux Invalides"],
+    ["1847", "Campagne des banquets réformistes"],
+    ["22-24 février 1848", "Révolution de Février"]
+  ],
+  gens: ["Louis-Philippe", "Guizot", "Thiers", "Lamartine"],
+  fin_texte: "L'interdiction d'un banquet réformiste déclenche les journées de février 1848."
+},
+{
+  id: "deuxieme-republique",
+  debut: 1848, fin: 1852, type: "republique",
+  nom: "Deuxième République",
+  dates: "1848 – 1852",
+  resume: "Suffrage universel masculin, ateliers nationaux, abolition de l'esclavage — puis la répression de juin et l'élection triomphale de Louis-Napoléon Bonaparte, qui la tue par coup d'État.",
+  cle: "Quatre ans qui contiennent tout : la promesse sociale de février, la fracture de juin, et la démonstration qu'un suffrage universel peut porter au pouvoir celui qui l'abolira.",
+  chrono: [
+    ["24 février 1848", "Proclamation de la République"],
+    ["Mars 1848", "Suffrage universel masculin"],
+    ["27 avril 1848", "Abolition définitive de l'esclavage (décret Schœlcher)"],
+    ["22-26 juin 1848", "Journées de Juin, réprimées par Cavaignac"],
+    ["10 décembre 1848", "Louis-Napoléon Bonaparte élu président"],
+    ["1850", "Loi Falloux ; restriction du corps électoral"],
+    ["2 décembre 1851", "Coup d'État"]
+  ],
+  gens: ["Lamartine", "Cavaignac", "Louis-Napoléon Bonaparte", "Ledru-Rollin", "Victor Schœlcher"],
+  fin_texte: "Le coup d'État du 2 décembre 1851, ratifié par plébiscite, puis rétablissement de l'Empire un an jour pour jour plus tard."
+},
+{
+  id: "second-empire",
+  debut: 1852, fin: 1870, type: "empire",
+  nom: "Second Empire",
+  dates: "1852 – 1870",
+  resume: "Napoléon III. Autoritaire jusqu'en 1860, puis « libéral ». C'est la France du rail, de la banque, d'Haussmann — et d'une politique extérieure qui finit à Sedan.",
+  cle: "Le régime se libéralise au moment précis où il s'affaiblit. C'est un schéma qu'on retrouve souvent : la concession arrive quand elle ne sauve plus rien.",
+  chrono: [
+    ["2 décembre 1852", "Proclamation de l'Empire"],
+    ["1853-1870", "Travaux d'Haussmann à Paris"],
+    ["1854-1856", "Guerre de Crimée"],
+    ["1859", "Campagne d'Italie ; annexion de Nice et de la Savoie"],
+    ["1860", "Traité de libre-échange avec le Royaume-Uni"],
+    ["1861-1867", "Expédition du Mexique"],
+    ["1869", "Ouverture du canal de Suez"],
+    ["2 septembre 1870", "Défaite et capture de l'empereur à Sedan"]
+  ],
+  gens: ["Napoléon III", "Eugénie", "Haussmann", "Morny", "Bismarck"],
+  fin_texte: "Sedan. La République est proclamée à Paris deux jours plus tard, le 4 septembre 1870."
+},
+{
+  id: "troisieme-republique",
+  debut: 1870, fin: 1940, type: "republique",
+  nom: "Troisième République",
+  dates: "1870 – 1940",
+  resume: "Née d'une défaite, installée par une assemblée à majorité monarchiste, elle devient le plus long régime français depuis 1789. Elle fixe l'école, la laïcité et l'empire colonial.",
+  cle: "Soixante-dix ans, soit plus que tous les régimes de 1789 à 1870 réunis. Sa force paradoxale : être un compromis que personne n'avait vraiment voulu.",
+  chrono: [
+    ["4 septembre 1870", "Proclamation de la République"],
+    ["Mars – mai 1871", "Commune de Paris et Semaine sanglante"],
+    ["1875", "Lois constitutionnelles ; amendement Wallon"],
+    ["1881-1882", "Lois Ferry : école gratuite, laïque et obligatoire"],
+    ["1894-1906", "Affaire Dreyfus"],
+    ["9 décembre 1905", "Séparation des Églises et de l'État"],
+    ["1914-1918", "Première Guerre mondiale"],
+    ["1936", "Front populaire, accords de Matignon"],
+    ["10 juillet 1940", "Vote des pleins pouvoirs constituants à Pétain"]
+  ],
+  gens: ["Thiers", "Gambetta", "Jules Ferry", "Clemenceau", "Jaurès", "Léon Blum"],
+  fin_texte: "La défaite de mai-juin 1940, puis le vote du 10 juillet à Vichy par lequel l'Assemblée se saborde."
+},
+{
+  id: "etat-francais",
+  debut: 1940, fin: 1944, type: "transition",
+  nom: "État français (Vichy)",
+  dates: "1940 – 1944",
+  resume: "Régime autoritaire dirigé par Pétain après la défaite. Révolution nationale, collaboration d'État, et participation de l'administration française à la persécution puis à la déportation des Juifs.",
+  cle: "Le régime est né d'un vote régulier mais a été déclaré nul et non avenu à la Libération. Sa responsabilité propre a été reconnue officiellement par la France en 1995.",
+  chrono: [
+    ["22 juin 1940", "Armistice de Rethondes"],
+    ["10 juillet 1940", "Pleins pouvoirs à Pétain"],
+    ["3 octobre 1940", "Premier statut des Juifs"],
+    ["24 octobre 1940", "Entrevue de Montoire"],
+    ["16-17 juillet 1942", "Rafle du Vélodrome d'Hiver"],
+    ["Novembre 1942", "Occupation de la zone sud"],
+    ["27 mai 1943", "Première réunion du Conseil national de la Résistance"],
+    ["Août 1944", "Libération de Paris"]
+  ],
+  gens: ["Philippe Pétain", "Pierre Laval", "François Darlan", "Jean Moulin"],
+  fin_texte: "Les débarquements de 1944 et la Libération. Le gouvernement se replie à Sigmaringen."
+},
+{
+  id: "gprf",
+  debut: 1944, fin: 1946, type: "transition",
+  nom: "Gouvernement provisoire",
+  dates: "1944 – 1946",
+  resume: "Le GPRF, dirigé par de Gaulle, rétablit la légalité républicaine et pose en deux ans les fondations sociales du pays.",
+  cle: "Deux ans de provisoire produisent le droit de vote des femmes et la Sécurité sociale — davantage d'acquis durables que bien des régimes installés.",
+  chrono: [
+    ["21 avril 1944", "Ordonnance accordant le droit de vote aux femmes"],
+    ["Juin 1944", "Le CFLN devient GPRF"],
+    ["1945", "Nationalisations ; ordonnances créant la Sécurité sociale"],
+    ["29 avril 1945", "Premier vote des femmes, aux municipales"],
+    ["21 octobre 1945", "Référendum et élection d'une Assemblée constituante"],
+    ["20 janvier 1946", "Démission de de Gaulle"],
+    ["16 juin 1946", "Discours de Bayeux"],
+    ["13 octobre 1946", "Adoption de la Constitution par référendum"]
+  ],
+  gens: ["Charles de Gaulle", "Pierre Mendès France", "Ambroise Croizat", "Georges Bidault"],
+  fin_texte: "L'entrée en vigueur de la Constitution de la Quatrième République."
+},
+{
+  id: "quatrieme-republique",
+  debut: 1946, fin: 1958, type: "republique",
+  nom: "Quatrième République",
+  dates: "1946 – 1958",
+  resume: "Régime parlementaire à l'exécutif faible : vingt-quatre gouvernements en douze ans. Elle réussit la reconstruction et lance la construction européenne, mais se brise sur la décolonisation.",
+  cle: "Elle bâtit l'Europe et l'État-providence pendant qu'elle s'effondre sur l'Algérie. Le jugement sévère qu'on en fait vient de son instabilité, pas de son bilan.",
+  chrono: [
+    ["27 octobre 1946", "Constitution de la IVe République"],
+    ["1947-1954", "Guerre d'Indochine ; Diên Biên Phu en mai 1954"],
+    ["18 avril 1951", "Traité instituant la CECA"],
+    ["1er novembre 1954", "Début de la guerre d'Algérie"],
+    ["1956", "Loi-cadre Defferre ; crise de Suez"],
+    ["25 mars 1957", "Traité de Rome"],
+    ["13 mai 1958", "Putsch d'Alger"],
+    ["1er juin 1958", "De Gaulle investi président du Conseil"]
+  ],
+  gens: ["Vincent Auriol", "Pierre Mendès France", "Robert Schuman", "Guy Mollet", "René Coty"],
+  fin_texte: "La crise du 13 mai 1958 : l'Assemblée délègue le pouvoir constituant à de Gaulle."
+},
+{
+  id: "cinquieme-republique",
+  debut: 1958, fin: 2026, type: "republique",
+  nom: "Cinquième République",
+  dates: "1958 – aujourd'hui",
+  resume: "Exécutif fort, président élu au suffrage universel direct depuis 1962. Le régime le plus stable depuis la Troisième, régulièrement rebattu par les cohabitations et une trentaine de révisions.",
+  cle: "Ce qui change vraiment la nature du régime n'est pas le texte de 1958 mais la réforme de 1962 : un président élu directement par le peuple n'a plus le même poids face au Parlement.",
+  chrono: [
+    ["4 octobre 1958", "Promulgation de la Constitution"],
+    ["18 mars 1962", "Accords d'Évian"],
+    ["28 octobre 1962", "Référendum sur l'élection du président au suffrage direct"],
+    ["Mai 1968", "Crise sociale et politique"],
+    ["1974", "Majorité abaissée à 18 ans ; saisine du Conseil constitutionnel élargie"],
+    ["1981", "Première alternance ; abolition de la peine de mort"],
+    ["1986", "Première cohabitation"],
+    ["1992", "Traité de Maastricht"],
+    ["2000", "Passage au quinquennat"],
+    ["2008", "Révision constitutionnelle ; question prioritaire de constitutionnalité"]
+  ],
+  gens: ["Charles de Gaulle", "Michel Debré", "Georges Pompidou", "François Mitterrand", "Jacques Chirac"],
+  fin_texte: "—"
+}
+];
+
+const TYPES = {
+  monarchie:  { label: "Monarchie",  couleur: "#2F4B7C", fond: "#EAEEF5" },
+  republique: { label: "République", couleur: "#A33A38", fond: "#F7EBEA" },
+  empire:     { label: "Empire",     couleur: "#8A6A2F", fond: "#F5EFE2" },
+  transition: { label: "Transition", couleur: "#6E6E6E", fond: "#EFEEEC" }
+};
+</script>
+
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --ink-2: #6B6B6B;
+    --ink-3: #A3A19C;
+    --line: #E4E2DD;
+    --bg: #FAFAF8;
+    --card: #FFFFFF;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header { margin-bottom: 32px; }
+  h1 {
+    font-size: 21px; font-weight: 600; margin: 0 0 4px;
+    letter-spacing: -0.01em;
+  }
+  .soustitre { color: var(--ink-2); font-size: 14px; margin: 0; }
+
+  /* ---------- Frise ---------- */
+  .frise-bloc { margin: 28px 0 8px; }
+  .frise {
+    display: flex; width: 100%; height: 52px; gap: 2px;
+    border-radius: 6px; overflow: hidden;
+  }
+  .seg {
+    border: 0; padding: 0; cursor: pointer;
+    min-width: 5px; position: relative;
+    transition: opacity .15s ease;
+  }
+  .seg:hover, .seg:focus-visible { opacity: .72; }
+  .seg:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; z-index: 2; }
+  .seg[aria-pressed="true"]::after {
+    content: ""; position: absolute; inset: 0;
+    border: 2px solid var(--ink); border-radius: 2px;
+  }
+  .seg.estompe { opacity: .18; }
+  .regle { position: relative; height: 22px; margin-top: 6px; }
+  .regle span {
+    position: absolute; top: 0; font-size: 12px; color: var(--ink-3);
+    transform: translateX(-50%); white-space: nowrap;
+  }
+  .regle span:first-child { transform: none; }
+  .regle span:last-child { transform: translateX(-100%); }
+
+  /* ---------- Filtres ---------- */
+  .filtres {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    margin: 24px 0; padding-top: 20px; border-top: 1px solid var(--line);
+  }
+  .puce {
+    font: inherit; font-size: 13px; cursor: pointer;
+    background: transparent; color: var(--ink-2);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 13px; display: inline-flex; align-items: center; gap: 7px;
+  }
+  .puce:hover { border-color: var(--ink-3); color: var(--ink); }
+  .puce[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .pastille { width: 8px; height: 8px; border-radius: 50%; }
+  .puce[aria-pressed="true"] .pastille { box-shadow: 0 0 0 1.5px rgba(255,255,255,.5); }
+  .filtres .droite { margin-left: auto; }
+
+  /* ---------- Grille ---------- */
+  .grille { display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start; }
+
+  .liste { display: flex; flex-direction: column; gap: 1px; }
+  .item {
+    font: inherit; text-align: left; cursor: pointer;
+    background: transparent; border: 0; border-radius: 8px;
+    padding: 11px 12px; display: grid; gap: 3px;
+    border-left: 3px solid transparent;
+  }
+  .item:hover { background: #F1EFEA; }
+  .item:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+  .item[aria-pressed="true"] { background: var(--card); box-shadow: 0 0 0 1px var(--line); }
+  .item.cache { display: none; }
+  .item-haut { display: flex; align-items: baseline; gap: 8px; }
+  .item-annees { font-size: 12px; color: var(--ink-3); }
+  .item-nom { font-size: 14px; font-weight: 500; line-height: 1.35; }
+  .item-barre { height: 4px; border-radius: 2px; margin-top: 4px; }
+  .a-revoir {
+    width: 6px; height: 6px; border-radius: 50%; background: #C4692F;
+    flex: none; align-self: center; margin-left: auto;
+  }
+
+  /* ---------- Détail ---------- */
+  .fiche {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 28px 30px 26px;
+  }
+  .fiche-entete { display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .annees {
+    font-size: 34px; font-weight: 600; letter-spacing: -0.02em;
+    line-height: 1.1; margin: 0;
+  }
+  .etiquette {
+    font-size: 12px; padding: 3px 10px; border-radius: 999px;
+    align-self: center; white-space: nowrap;
+  }
+  h2 { font-size: 17px; font-weight: 600; margin: 6px 0 0; }
+  .duree { color: var(--ink-3); font-size: 13px; margin: 2px 0 0; }
+  .resume { margin: 20px 0 0; max-width: 62ch; }
+
+  .cle {
+    margin: 22px 0 0; padding: 14px 16px; border-radius: 8px;
+    font-size: 14.5px; max-width: 64ch;
+  }
+
+  h3 {
+    font-size: 12px; font-weight: 600; color: var(--ink-3);
+    margin: 30px 0 12px; letter-spacing: .01em;
+  }
+  .chrono { margin: 0; }
+  .chrono div { display: grid; grid-template-columns: 152px 1fr; gap: 16px; padding: 6px 0; }
+  .chrono dt { color: var(--ink-2); font-size: 13.5px; }
+  .chrono dd { margin: 0; font-size: 14.5px; }
+  .gens { display: flex; flex-wrap: wrap; gap: 7px; }
+  .gens span {
+    font-size: 13px; padding: 4px 11px; border-radius: 999px;
+    background: #F1EFEA; color: var(--ink);
+  }
+  .fin-texte { margin: 0; max-width: 62ch; }
+
+  .pied {
+    margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line);
+    display: flex; gap: 14px; align-items: center; flex-wrap: wrap;
+  }
+  .bouton {
+    font: inherit; font-size: 13.5px; cursor: pointer;
+    background: var(--ink); color: #fff; border: 0;
+    border-radius: 8px; padding: 8px 16px;
+  }
+  .bouton:hover { background: #333; }
+  .bouton:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .revu-info { font-size: 13px; color: var(--ink-2); }
+  textarea {
+    font: inherit; font-size: 14px; width: 100%; max-width: 62ch;
+    min-height: 82px; resize: vertical;
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 11px 13px; background: #FCFBF9; color: var(--ink);
+  }
+  textarea:focus { outline: 2px solid var(--ink); outline-offset: -1px; border-color: transparent; }
+  .etat-sauvegarde { font-size: 12.5px; color: var(--ink-3); margin: 7px 0 0; min-height: 18px; }
+
+  @media (max-width: 860px) {
+    .wrap { padding: 28px 16px 60px; }
+    .grille { grid-template-columns: 1fr; gap: 20px; }
+    .liste { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 6px; }
+    .item { flex: none; width: 190px; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
+    .fiche { padding: 22px 18px; }
+    .annees { font-size: 27px; }
+    .chrono div { grid-template-columns: 1fr; gap: 1px; padding: 8px 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Régimes politiques français</h1>
+    <p class="soustitre">Quatorze régimes en deux cent trente-sept ans. Chaque barre est proportionnelle à sa durée.</p>
+
+    <div class="frise-bloc">
+      <div class="frise" id="frise" role="group" aria-label="Frise chronologique des régimes"></div>
+      <div class="regle" id="regle"></div>
+    </div>
+  </header>
+
+  <div class="filtres" id="filtres"></div>
+
+  <div class="grille">
+    <div class="liste" id="liste"></div>
+    <div id="fiche"></div>
+  </div>
+</div>
+
+<script>
+const CLE_STOCKAGE = "regimes-france";
+const DEBUT = 1789, FIN = 2026, SPAN = FIN - DEBUT;
+const SEUIL_REVISION = 30; // jours avant qu'une fiche repasse « à revoir »
+
+let etat = { revisions: {}, notes: {} };
+let selection = PERIODES[0].id;
+let filtre = "tous";
+
+/* ---------- Persistance ----------
+   Deux contextes possibles : la page ouverte dans Claude (window.storage)
+   ou hébergée sur le web / ouverte en local (stockage du navigateur).
+   On tente le premier, on retombe sur le second.                        */
+async function charger() {
+  let brut = null;
+  try {
+    if (window.storage) {
+      const r = await window.storage.get(CLE_STOCKAGE);
+      if (r && r.value) brut = r.value;
+    }
+  } catch (e) { /* clé absente ou stockage Claude indisponible */ }
+
+  if (brut === null) {
+    try { brut = localStorage.getItem(CLE_STOCKAGE); } catch (e) { /* mode privé */ }
+  }
+
+  if (brut) {
+    try {
+      etat = Object.assign({ revisions: {}, notes: {} }, JSON.parse(brut));
+    } catch (e) { /* données illisibles : on repart à zéro */ }
+  }
+}
+
+async function sauver() {
+  const json = JSON.stringify(etat);
+  let ok = false;
+
+  try {
+    if (window.storage) { await window.storage.set(CLE_STOCKAGE, json); ok = true; }
+  } catch (e) { /* on essaie l'autre voie */ }
+
+  try { localStorage.setItem(CLE_STOCKAGE, json); ok = true; } catch (e) { /* mode privé */ }
+
+  return ok;
+}
+
+/* ---------- Utilitaires ---------- */
+const duree = p => Math.max(p.fin - p.debut, 0.3);
+const joursDepuis = iso => Math.floor((Date.now() - new Date(iso)) / 86400000);
+function aRevoir(p) {
+  const d = etat.revisions[p.id];
+  return !d || joursDepuis(d) >= SEUIL_REVISION;
+}
+function texteRevision(p) {
+  const d = etat.revisions[p.id];
+  if (!d) return "Jamais révisé";
+  const j = joursDepuis(d);
+  if (j === 0) return "Révisé aujourd'hui";
+  if (j === 1) return "Révisé hier";
+  return "Révisé il y a " + j + " jours";
+}
+const visible = p => filtre === "tous" || p.type === filtre;
+
+/* ---------- Frise ---------- */
+function construireFrise() {
+  const f = document.getElementById("frise");
+  f.innerHTML = "";
+  PERIODES.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "seg";
+    b.style.flex = duree(p) + " 0 auto";
+    b.style.background = TYPES[p.type].couleur;
+    b.title = p.dates + " — " + p.nom;
+    b.setAttribute("aria-label", p.nom + ", " + p.dates);
+    b.onclick = () => choisir(p.id);
+    f.appendChild(b);
+  });
+
+  const r = document.getElementById("regle");
+  r.innerHTML = "";
+  [1789, 1830, 1870, 1914, 1958, 2026].forEach(an => {
+    const s = document.createElement("span");
+    s.textContent = an;
+    s.style.left = ((an - DEBUT) / SPAN * 100) + "%";
+    r.appendChild(s);
+  });
+}
+
+/* ---------- Filtres ---------- */
+function construireFiltres() {
+  const c = document.getElementById("filtres");
+  c.innerHTML = "";
+  const options = [["tous", "Tous les régimes", null]].concat(
+    Object.keys(TYPES).map(k => [k, TYPES[k].label, TYPES[k].couleur])
+  );
+  options.forEach(([val, label, couleur]) => {
+    const b = document.createElement("button");
+    b.className = "puce";
+    b.setAttribute("aria-pressed", filtre === val);
+    if (couleur) {
+      const d = document.createElement("i");
+      d.className = "pastille";
+      d.style.background = couleur;
+      b.appendChild(d);
+    }
+    b.appendChild(document.createTextNode(label));
+    b.onclick = () => { filtre = val; rendre(); };
+    c.appendChild(b);
+  });
+
+  const rev = document.createElement("button");
+  rev.className = "puce droite";
+  rev.textContent = "Réviser au hasard";
+  rev.onclick = () => {
+    const pool = PERIODES.filter(p => visible(p) && aRevoir(p));
+    const source = pool.length ? pool : PERIODES.filter(visible);
+    if (!source.length) return;
+    choisir(source[Math.floor(Math.random() * source.length)].id);
+  };
+  c.appendChild(rev);
+}
+
+/* ---------- Liste ---------- */
+function construireListe() {
+  const l = document.getElementById("liste");
+  l.innerHTML = "";
+  const maxDuree = Math.max(...PERIODES.map(duree));
+  PERIODES.forEach(p => {
+    const b = document.createElement("button");
+    b.className = "item" + (visible(p) ? "" : " cache");
+    b.setAttribute("aria-pressed", selection === p.id);
+    b.style.borderLeftColor = selection === p.id ? TYPES[p.type].couleur : "transparent";
+    b.onclick = () => choisir(p.id);
+
+    const haut = document.createElement("div");
+    haut.className = "item-haut";
+    const an = document.createElement("span");
+    an.className = "item-annees";
+    an.textContent = p.dates;
+    haut.appendChild(an);
+    if (aRevoir(p)) {
+      const dot = document.createElement("i");
+      dot.className = "a-revoir";
+      dot.title = "À revoir";
+      haut.appendChild(dot);
+    }
+
+    const nom = document.createElement("div");
+    nom.className = "item-nom";
+    nom.textContent = p.nom;
+
+    const barre = document.createElement("div");
+    barre.className = "item-barre";
+    barre.style.background = TYPES[p.type].couleur;
+    barre.style.width = Math.max(duree(p) / maxDuree * 100, 2) + "%";
+
+    b.append(haut, nom, barre);
+    l.appendChild(b);
+  });
+}
+
+/* ---------- Fiche ---------- */
+function construireFiche() {
+  const p = PERIODES.find(x => x.id === selection);
+  const t = TYPES[p.type];
+  const cible = document.getElementById("fiche");
+  cible.innerHTML = "";
+
+  const art = document.createElement("article");
+  art.className = "fiche";
+
+  const entete = document.createElement("div");
+  entete.className = "fiche-entete";
+  const bloc = document.createElement("div");
+  const annees = document.createElement("p");
+  annees.className = "annees";
+  annees.textContent = p.dates;
+  const h2 = document.createElement("h2");
+  h2.textContent = p.nom;
+  const d = document.createElement("p");
+  d.className = "duree";
+  const ans = Math.round((p.fin - p.debut) * 10) / 10;
+  d.textContent = ans < 1 ? "Moins d'un an" : ans + (ans > 1 ? " ans" : " an");
+  bloc.append(annees, h2, d);
+  const et = document.createElement("span");
+  et.className = "etiquette";
+  et.style.background = t.fond;
+  et.style.color = t.couleur;
+  et.textContent = t.label;
+  entete.append(bloc, et);
+  art.appendChild(entete);
+
+  const res = document.createElement("p");
+  res.className = "resume";
+  res.textContent = p.resume;
+  art.appendChild(res);
+
+  if (p.cle) {
+    const c = document.createElement("p");
+    c.className = "cle";
+    c.style.background = t.fond;
+    c.style.color = t.couleur;
+    c.textContent = p.cle;
+    art.appendChild(c);
+  }
+
+  if (p.chrono && p.chrono.length) {
+    art.appendChild(titre("Chronologie"));
+    const dl = document.createElement("dl");
+    dl.className = "chrono";
+    p.chrono.forEach(([date, fait]) => {
+      const ligne = document.createElement("div");
+      const dt = document.createElement("dt"); dt.textContent = date;
+      const dd = document.createElement("dd"); dd.textContent = fait;
+      ligne.append(dt, dd);
+      dl.appendChild(ligne);
+    });
+    art.appendChild(dl);
+  }
+
+  if (p.gens && p.gens.length) {
+    art.appendChild(titre("Personnalités"));
+    const g = document.createElement("div");
+    g.className = "gens";
+    p.gens.forEach(n => {
+      const s = document.createElement("span");
+      s.textContent = n;
+      g.appendChild(s);
+    });
+    art.appendChild(g);
+  }
+
+  if (p.fin_texte && p.fin_texte !== "—") {
+    art.appendChild(titre("Pourquoi le régime tombe"));
+    const f = document.createElement("p");
+    f.className = "fin-texte";
+    f.textContent = p.fin_texte;
+    art.appendChild(f);
+  }
+
+  art.appendChild(titre("Mes notes"));
+  const ta = document.createElement("textarea");
+  ta.value = etat.notes[p.id] || "";
+  ta.placeholder = "Ce que vous voulez retenir, un lien avec une autre période, une lecture…";
+  ta.setAttribute("aria-label", "Notes personnelles sur " + p.nom);
+  const info = document.createElement("p");
+  info.className = "etat-sauvegarde";
+  let minuteur;
+  ta.oninput = () => {
+    etat.notes[p.id] = ta.value;
+    clearTimeout(minuteur);
+    info.textContent = "";
+    minuteur = setTimeout(async () => {
+      info.textContent = (await sauver()) ? "Note enregistrée" : "Enregistrement indisponible dans ce contexte";
+    }, 600);
+  };
+  art.append(ta, info);
+
+  const pied = document.createElement("div");
+  pied.className = "pied";
+  const bt = document.createElement("button");
+  bt.className = "bouton";
+  bt.textContent = "Marquer comme révisé";
+  const txt = document.createElement("span");
+  txt.className = "revu-info";
+  txt.textContent = texteRevision(p);
+  bt.onclick = async () => {
+    etat.revisions[p.id] = new Date().toISOString();
+    await sauver();
+    txt.textContent = texteRevision(p);
+    construireListe();
+  };
+  pied.append(bt, txt);
+  art.appendChild(pied);
+
+  cible.appendChild(art);
+}
+function titre(texte) {
+  const h = document.createElement("h3");
+  h.textContent = texte;
+  return h;
+}
+
+/* ---------- Orchestration ---------- */
+function choisir(id) {
+  selection = id;
+  rendre();
+  if (window.innerWidth <= 860) {
+    document.getElementById("fiche").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+function rendre() {
+  construireFiltres();
+  construireListe();
+  construireFiche();
+  document.querySelectorAll("#frise .seg").forEach((s, i) => {
+    const p = PERIODES[i];
+    s.setAttribute("aria-pressed", p.id === selection);
+    s.classList.toggle("estompe", !visible(p));
+  });
+}
+
+(async function () {
+  await charger();
+  construireFrise();
+  rendre();
+})();
+</script>
