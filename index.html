@@ -11,9 +11,48 @@
    CONTENU — tout est ici. Pour ajouter ou modifier une fiche, éditez ce
    tableau et rien d'autre. Chaque champ est optionnel sauf id, debut, fin,
    nom et type.
-   type : "monarchie" | "republique" | "empire" | "transition"
+   type : "monarchie" | "republique" | "empire" | "transition" | "antiquite"
+   debut/fin : années astronomiques (une date avant J.-C. s'écrit en négatif,
+   ex. 500 av. J.-C. = -500) — nécessaire pour que les durées et la frise
+   restent justes de part et d'autre de l'an 1.
+   gens : chaîne simple, ou { n: "Nom", r: "rôle" } pour afficher un rôle
+   à côté du nom. evenements : liste optionnelle de noms d'événements,
+   affichée à côté de Personnalités. fin_titre : remplace l'intitulé par
+   défaut « Pourquoi le régime tombe » quand ça n'est pas un régime.
    ========================================================================= */
 const PERIODES = [
+{
+  id: "guerres-mediques",
+  debut: -500, fin: -465, type: "antiquite",
+  nom: "Guerres médiques",
+  dates: "500 – 465 av. J.-C.",
+  resume: "Une révolte de cités grecques d'Asie mineure contre la Perse dégénère en deux invasions ratées de la Grèce continentale. Athènes et Sparte, rivales, s'unissent le temps de repousser le plus grand empire du monde connu.",
+  cle: "Face à un empire cent fois plus vaste, les cités grecques ne l'emportent ni par le nombre ni par la richesse, mais par le terrain choisi — Thermopyles, Salamine — et une alliance de circonstance qui ne survivra pas à la victoire.",
+  chrono: [
+    ["500 av. J.-C.", "Révolte de l'Ionie : Athènes envoie des troupes soutenir les Grecs d'Ionie, en Asie mineure, contre la domination perse. Prise de Sardes et incendie de son temple — cela déclenche la fureur de Darius Ier."],
+    ["494 av. J.-C.", "Bataille de Ladé : défaite navale des cités ioniennes, chute de Milet, fin de la révolte."],
+    ["490 av. J.-C.", "Bataille de Marathon : Darius envoie une flotte punitive contre Athènes et Érétrie. Miltiade écrase l'armée perse sur la plage de Marathon."],
+    ["486 av. J.-C.", "Mort de Darius Ier ; Xerxès Ier lui succède et prépare une invasion à bien plus grande échelle."],
+    ["480 av. J.-C.", "Seconde invasion perse : Xerxès franchit l'Hellespont. Thermopyles — Léonidas et ses 300 Spartiates retardent l'armée perse au prix de leur vie. Athènes est évacuée puis incendiée. Salamine — victoire navale grecque décisive menée par Thémistocle ; Xerxès rentre en Perse."],
+    ["479 av. J.-C.", "Platées et Mycale : les Grecs écrasent, le même jour selon la tradition, l'armée perse restée sur le continent et détruisent sa flotte."],
+    ["478-477 av. J.-C.", "Fondation de la Ligue de Délos sous l'hégémonie d'Athènes, pour poursuivre la guerre contre la Perse."],
+    ["466 av. J.-C.", "Bataille de l'Eurymédon : Cimon défait la flotte et l'armée perses en Asie mineure."],
+    ["465 av. J.-C.", "Xerxès est assassiné par le chef de sa garde ; Artaxerxès Ier lui succède."]
+  ],
+  gens: [
+    { n: "Darius Ier", r: "roi des Perses" },
+    { n: "Xerxès Ier", r: "roi des Perses" },
+    { n: "Artaxerxès Ier", r: "roi des Perses" },
+    { n: "Aristagoras", r: "tyran de Milet" },
+    { n: "Miltiade", r: "vainqueur de Marathon" },
+    { n: "Léonidas Ier", r: "roi de Sparte" },
+    { n: "Thémistocle", r: "stratège athénien" },
+    { n: "Cimon", r: "stratège athénien" }
+  ],
+  evenements: ["Révolte de l'Ionie", "Bataille de Marathon", "Bataille des Thermopyles", "Bataille de Salamine", "Bataille de Platées", "Bataille de Mycale", "Ligue de Délos", "Bataille de l'Eurymédon"],
+  fin_titre: "Comment la guerre se termine",
+  fin_texte: "Après Platées et Mycale, l'initiative passe aux Grecs. Cimon achève de repousser la Perse hors de la mer Égée à l'Eurymédon ; la mort de Xerxès, assassiné par son propre garde, clôt le règne qui avait porté l'invasion."
+},
 {
   id: "monarchie-constitutionnelle",
   debut: 1789, fin: 1792, type: "monarchie",
@@ -297,7 +336,8 @@ const TYPES = {
   monarchie:  { label: "Monarchie",  couleur: "#2F4B7C", fond: "#EAEEF5" },
   republique: { label: "République", couleur: "#A33A38", fond: "#F7EBEA" },
   empire:     { label: "Empire",     couleur: "#8A6A2F", fond: "#F5EFE2" },
-  transition: { label: "Transition", couleur: "#6E6E6E", fond: "#EFEEEC" }
+  transition: { label: "Transition", couleur: "#6E6E6E", fond: "#EFEEEC" },
+  antiquite:  { label: "Antiquité",  couleur: "#B5562E", fond: "#F6EAE2" }
 };
 </script>
 
@@ -385,6 +425,10 @@ const TYPES = {
     color: rgba(255,255,255,.85); font-size: 11px;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 1px 2px rgba(0,0,0,.25);
+  }
+  .coupure {
+    flex: none; align-self: stretch; cursor: help;
+    background: repeating-linear-gradient(135deg, var(--card) 0 4px, var(--line) 4px 8px);
   }
   .regle { position: relative; height: 22px; margin-top: 6px; width: max-content; min-width: 100%; }
   .regle span {
@@ -492,7 +536,7 @@ const TYPES = {
 <div class="wrap">
   <header>
     <h1>Régimes politiques français</h1>
-    <p class="soustitre">Quatorze régimes en deux cent trente-sept ans. Chaque barre est proportionnelle à sa durée.</p>
+    <p class="soustitre" id="soustitre"></p>
 
     <div class="frise-toolbar">
       <button type="button" class="zoom-btn" id="zoomMoins" aria-label="Réduire la frise">−</button>
@@ -515,9 +559,13 @@ const TYPES = {
 </div>
 
 <script>
-const DEBUT = 1789, FIN = 2026, SPAN = FIN - DEBUT;
+const DEBUT = -500, FIN = 2026;
+// Entre les guerres médiques et la Révolution s'étendent 2254 ans que la
+// frise ne représente pas à l'échelle : cette coupure les compresse à une
+// largeur fixe, comme un axe brisé sur un graphique.
+const COUPURE = { debut: -465, fin: 1789, largeur: 40 };
 
-let selection = PERIODES[0].id;
+let selection = "monarchie-constitutionnelle";
 let filtre = "tous";
 
 /* ---------- Utilitaires ---------- */
@@ -548,8 +596,27 @@ function intervalleGraduation() {
   return 200;
 }
 
+/* Convertit une année (astronomique, négative avant J.-C.) en position x,
+   en comptant la coupure comme une largeur fixe plutôt que réelle. */
+function anneeVersX(an) {
+  const avant = (COUPURE.debut - DEBUT) * PX_PAR_AN;
+  if (an <= COUPURE.debut) return (an - DEBUT) * PX_PAR_AN;
+  if (an < COUPURE.fin) return avant + COUPURE.largeur * (an - COUPURE.debut) / (COUPURE.fin - COUPURE.debut);
+  return avant + COUPURE.largeur + (an - COUPURE.fin) * PX_PAR_AN;
+}
+/* Fonction inverse, utilisée pour ancrer le zoom sous le doigt/curseur. */
+function xVersAnnee(x) {
+  const avant = (COUPURE.debut - DEBUT) * PX_PAR_AN;
+  if (x <= avant) return DEBUT + x / PX_PAR_AN;
+  if (x < avant + COUPURE.largeur) return (x - avant) < COUPURE.largeur / 2 ? COUPURE.debut : COUPURE.fin;
+  return COUPURE.fin + (x - avant - COUPURE.largeur) / PX_PAR_AN;
+}
+
 function construireFrise() {
-  const largeurTotale = SPAN * PX_PAR_AN;
+  document.getElementById("soustitre").textContent =
+    PERIODES.length + " périodes, de l'Antiquité à aujourd'hui. Chaque barre est proportionnelle à sa durée — le vide entre l'Antiquité et 1789 est volontairement compressé.";
+
+  const largeurTotale = anneeVersX(FIN);
 
   const f = document.getElementById("frise");
   f.innerHTML = "";
@@ -579,17 +646,34 @@ function construireFrise() {
     }
     b.onclick = () => choisir(p.id);
     f.appendChild(b);
+    if (p.fin === COUPURE.debut) {
+      const c = document.createElement("div");
+      c.className = "coupure";
+      c.style.width = COUPURE.largeur + "px";
+      c.title = (COUPURE.fin - COUPURE.debut) + " ans non représentés à l'échelle";
+      f.appendChild(c);
+    }
   });
 
   const r = document.getElementById("regle");
   r.innerHTML = "";
   r.style.width = largeurTotale + "px";
+
+  // Antiquité : un seul segment, ses deux bornes suffisent comme repères
+  [DEBUT, COUPURE.debut].forEach(an => {
+    const s = document.createElement("span");
+    s.textContent = Math.abs(an) + " av. J.-C.";
+    s.style.left = anneeVersX(an) + "px";
+    r.appendChild(s);
+  });
+
+  // Époque moderne : graduation régulière, pas adapté au niveau de zoom
   const intervalle = intervalleGraduation();
-  const premier = Math.ceil(DEBUT / intervalle) * intervalle;
+  const premier = Math.ceil(COUPURE.fin / intervalle) * intervalle;
   for (let an = premier; an < FIN; an += intervalle) {
     const s = document.createElement("span");
     s.textContent = an;
-    s.style.left = ((an - DEBUT) * PX_PAR_AN) + "px";
+    s.style.left = anneeVersX(an) + "px";
     r.appendChild(s);
   }
   appliquerEtatFrise();
@@ -601,13 +685,13 @@ function definirZoom(nouveauPx, ancrageAnnee, xEcran) {
   const rect = conteneur.getBoundingClientRect();
   PX_PAR_AN = Math.min(PX_PAR_AN_MAX, Math.max(PX_PAR_AN_MIN, nouveauPx));
   construireFrise();
-  conteneur.scrollLeft = (ancrageAnnee - DEBUT) * PX_PAR_AN - (xEcran - rect.left);
+  conteneur.scrollLeft = anneeVersX(ancrageAnnee) - (xEcran - rect.left);
 }
 function zoomBouton(facteur) {
   const conteneur = document.getElementById("friseScroll");
   const rect = conteneur.getBoundingClientRect();
   const centre = rect.left + rect.width / 2;
-  const ancrageAnnee = DEBUT + (conteneur.scrollLeft + rect.width / 2) / PX_PAR_AN;
+  const ancrageAnnee = xVersAnnee(conteneur.scrollLeft + rect.width / 2);
   definirZoom(PX_PAR_AN * facteur, ancrageAnnee, centre);
 }
 function initialiserZoomFrise() {
@@ -622,7 +706,7 @@ function initialiserZoomFrise() {
       pxDepart = PX_PAR_AN;
       const rect = conteneur.getBoundingClientRect();
       const x = milieu(e.touches[0], e.touches[1]) - rect.left + conteneur.scrollLeft;
-      ancrageAnnee = DEBUT + x / PX_PAR_AN;
+      ancrageAnnee = xVersAnnee(x);
     }
   }, { passive: true });
 
@@ -643,7 +727,7 @@ function initialiserZoomFrise() {
     if (!e.ctrlKey) return;
     e.preventDefault();
     const rect = conteneur.getBoundingClientRect();
-    const ancrage = DEBUT + (conteneur.scrollLeft + (e.clientX - rect.left)) / PX_PAR_AN;
+    const ancrage = xVersAnnee(conteneur.scrollLeft + (e.clientX - rect.left));
     definirZoom(PX_PAR_AN * Math.exp(-e.deltaY * 0.012), ancrage, e.clientX);
   }, { passive: false });
 
@@ -842,7 +926,7 @@ function construireFiche() {
   if (p.fin_texte && p.fin_texte !== "—") {
     const blocFin = document.createElement("div");
     blocFin.className = "bloc";
-    blocFin.appendChild(titre("Pourquoi le régime tombe"));
+    blocFin.appendChild(titre(p.fin_titre || "Pourquoi le régime tombe"));
     const f = document.createElement("p");
     f.className = "fin-texte";
     f.textContent = p.fin_texte;
