@@ -10,8 +10,14 @@
 /* =========================================================================
    CONTENU — tout est ici. Pour ajouter ou modifier une fiche, éditez ce
    tableau et rien d'autre. Chaque champ est optionnel sauf id, debut, fin,
-   nom et type.
+   nom, type et ligne.
    type : "monarchie" | "republique" | "empire" | "transition" | "antiquite"
+        | "guerre" — détermine la couleur (voir TYPES plus bas).
+   ligne : "regimes" | "conflits" — détermine sur quelle ligne de la frise
+        la période s'affiche (voir LIGNES). Deux périodes de lignes
+        différentes peuvent se chevaucher dans le temps (ex. la Première
+        Guerre mondiale et la Troisième République) ; deux périodes d'une
+        même ligne ne le peuvent pas.
    debut/fin : années astronomiques (une date avant J.-C. s'écrit en négatif,
    ex. 500 av. J.-C. = -500) — nécessaire pour que les durées et la frise
    restent justes de part et d'autre de l'an 1.
@@ -23,7 +29,7 @@
 const PERIODES = [
 {
   id: "guerres-mediques",
-  debut: -500, fin: -465, type: "antiquite",
+  debut: -500, fin: -465, type: "antiquite", ligne: "conflits",
   nom: "Guerres médiques",
   dates: "500 – 465 av. J.-C.",
   resume: "Une révolte de cités grecques d'Asie mineure contre la Perse dégénère en deux invasions ratées de la Grèce continentale. Athènes et Sparte, rivales, s'unissent le temps de repousser le plus grand empire du monde connu.",
@@ -54,8 +60,39 @@ const PERIODES = [
   fin_texte: "Après Platées et Mycale, l'initiative passe aux Grecs. Cimon achève de repousser la Perse hors de la mer Égée à l'Eurymédon ; la mort de Xerxès, assassiné par son propre garde, clôt le règne qui avait porté l'invasion."
 },
 {
+  id: "premiere-guerre-mondiale",
+  debut: 1914, fin: 1918, type: "guerre", ligne: "conflits",
+  nom: "Première Guerre mondiale",
+  dates: "1914 – 1918",
+  resume: "Un attentat à Sarajevo déclenche un système d'alliances qui embrase toute l'Europe. Quatre ans de guerre de position dans les tranchées, avant qu'une guerre censée durer quelques semaines n'engloutisse près de dix millions de soldats.",
+  cle: "La guerre change de nature en 1914 : l'offensive rapide promise par les états-majors s'enlise en quelques semaines dans une guerre de tranchées où l'artillerie et la mitrailleuse rendent toute avancée exorbitamment coûteuse.",
+  chrono: [
+    ["28 juin 1914", "Assassinat de l'archiduc François-Ferdinand à Sarajevo par Gavrilo Princip."],
+    ["28 juillet 1914", "L'Autriche-Hongrie déclare la guerre à la Serbie ; le jeu des alliances entraîne l'Europe entière en quelques jours."],
+    ["Août 1914", "Invasion allemande de la Belgique (plan Schlieffen) ; entrée en guerre de la France, de la Russie et du Royaume-Uni."],
+    ["6-12 septembre 1914", "Bataille de la Marne : l'avancée allemande est stoppée aux portes de Paris, le front se fige."],
+    ["1915", "Le front s'enterre : début de la guerre de tranchées ; première utilisation massive de gaz de combat à Ypres."],
+    ["21 fév. – 18 déc. 1916", "Bataille de Verdun : dix mois de combats, environ 300 000 morts, sans gain territorial décisif."],
+    ["1er juill. – 18 nov. 1916", "Bataille de la Somme : plus d'un million de victimes, premiers chars d'assaut engagés par les Britanniques."],
+    ["1917", "Mutineries dans l'armée française après l'échec de l'offensive du Chemin des Dames ; la révolution russe fait sortir la Russie du conflit."],
+    ["6 avril 1917", "Entrée en guerre des États-Unis."],
+    ["11 novembre 1918", "Armistice de Rethondes : l'Allemagne cesse les combats."]
+  ],
+  gens: [
+    { n: "Raymond Poincaré", r: "président de la République" },
+    { n: "Georges Clemenceau", r: "président du Conseil" },
+    { n: "Philippe Pétain", r: "vainqueur de Verdun" },
+    { n: "Ferdinand Foch", r: "maréchal, commandant suprême allié" },
+    { n: "Guillaume II", r: "empereur allemand" },
+    { n: "Woodrow Wilson", r: "président des États-Unis" }
+  ],
+  evenements: ["Bataille de la Marne", "Bataille de Verdun", "Bataille de la Somme", "Offensive du Chemin des Dames", "Armistice de 1918"],
+  fin_titre: "Comment la guerre se termine",
+  fin_texte: "L'arrivée des troupes américaines et l'épuisement des empires centraux, affaiblis par le blocus et la famine, précipitent l'effondrement du front allemand à l'automne 1918. L'Allemagne signe l'armistice le 11 novembre ; le traité de Versailles, signé en 1919, en dessinera les conséquences pour vingt ans."
+},
+{
   id: "monarchie-constitutionnelle",
-  debut: 1789, fin: 1792, type: "monarchie",
+  debut: 1789, fin: 1792, type: "monarchie", ligne: "regimes",
   nom: "Monarchie constitutionnelle",
   dates: "1789 – 1792",
   resume: "La Révolution ne commence pas en république. Louis XVI reste roi mais partage désormais le pouvoir avec une Assemblée élue. Le régime tient trois ans et meurt de deux choses : la fuite du roi et l'entrée en guerre.",
@@ -79,7 +116,7 @@ const PERIODES = [
 },
 {
   id: "premiere-republique",
-  debut: 1792, fin: 1804, type: "republique",
+  debut: 1792, fin: 1804, type: "republique", ligne: "regimes",
   nom: "Première République",
   dates: "1792 – 1804",
   resume: "Trois régimes sous un seul nom : la Convention, le Directoire, puis le Consulat. Bonaparte vide la République de son contenu avant de la remplacer officiellement.",
@@ -100,7 +137,7 @@ const PERIODES = [
 },
 {
   id: "premier-empire",
-  debut: 1804, fin: 1814, type: "empire",
+  debut: 1804, fin: 1814, type: "empire", ligne: "regimes",
   nom: "Premier Empire",
   dates: "1804 – 1814",
   resume: "Napoléon Ier domine l'Europe pendant huit ans, puis s'effondre en deux. L'Empire lègue à la France ses institutions administratives et son droit civil.",
@@ -119,7 +156,7 @@ const PERIODES = [
 },
 {
   id: "premiere-restauration",
-  debut: 1814, fin: 1815, type: "monarchie",
+  debut: 1814, fin: 1815, type: "monarchie", ligne: "regimes",
   nom: "Première Restauration",
   dates: "1814 – 1815",
   resume: "Louis XVIII, frère de Louis XVI, revient sur le trône dans les bagages des coalisés. Il octroie une Charte qui conserve l'essentiel de l'héritage révolutionnaire. Onze mois au total.",
@@ -135,7 +172,7 @@ const PERIODES = [
 },
 {
   id: "cent-jours",
-  debut: 1815, fin: 1815.3, type: "transition",
+  debut: 1815, fin: 1815.3, type: "transition", ligne: "regimes",
   nom: "Les Cent-Jours",
   dates: "mars – juillet 1815",
   resume: "Napoléon reprend le pouvoir sans combat, tente un empire libéral avec l'Acte additionnel, et perd tout à Waterloo en moins de trois mois.",
@@ -152,7 +189,7 @@ const PERIODES = [
 },
 {
   id: "seconde-restauration",
-  debut: 1815, fin: 1830, type: "monarchie",
+  debut: 1815, fin: 1830, type: "monarchie", ligne: "regimes",
   nom: "Seconde Restauration",
   dates: "1815 – 1830",
   resume: "Louis XVIII puis Charles X. Un régime parlementaire censitaire tiraillé entre ultras et libéraux, qui finit par tenter le passage en force contre sa propre Charte.",
@@ -173,7 +210,7 @@ const PERIODES = [
 },
 {
   id: "monarchie-juillet",
-  debut: 1830, fin: 1848, type: "monarchie",
+  debut: 1830, fin: 1848, type: "monarchie", ligne: "regimes",
   nom: "Monarchie de Juillet",
   dates: "1830 – 1848",
   resume: "Louis-Philippe est roi « des Français », pas « de France ». Monarchie bourgeoise et censitaire, économiquement prospère, politiquement sourde à la demande d'élargissement du suffrage.",
@@ -190,7 +227,7 @@ const PERIODES = [
 },
 {
   id: "deuxieme-republique",
-  debut: 1848, fin: 1852, type: "republique",
+  debut: 1848, fin: 1852, type: "republique", ligne: "regimes",
   nom: "Deuxième République",
   dates: "1848 – 1852",
   resume: "Suffrage universel masculin, ateliers nationaux, abolition de l'esclavage — puis la répression de juin et l'élection triomphale de Louis-Napoléon Bonaparte, qui la tue par coup d'État.",
@@ -209,7 +246,7 @@ const PERIODES = [
 },
 {
   id: "second-empire",
-  debut: 1852, fin: 1870, type: "empire",
+  debut: 1852, fin: 1870, type: "empire", ligne: "regimes",
   nom: "Second Empire",
   dates: "1852 – 1870",
   resume: "Napoléon III. Autoritaire jusqu'en 1860, puis « libéral ». C'est la France du rail, de la banque, d'Haussmann — et d'une politique extérieure qui finit à Sedan.",
@@ -229,7 +266,7 @@ const PERIODES = [
 },
 {
   id: "troisieme-republique",
-  debut: 1870, fin: 1940, type: "republique",
+  debut: 1870, fin: 1940, type: "republique", ligne: "regimes",
   nom: "Troisième République",
   dates: "1870 – 1940",
   resume: "Née d'une défaite, installée par une assemblée à majorité monarchiste, elle devient le plus long régime français depuis 1789. Elle fixe l'école, la laïcité et l'empire colonial.",
@@ -250,7 +287,7 @@ const PERIODES = [
 },
 {
   id: "etat-francais",
-  debut: 1940, fin: 1944, type: "transition",
+  debut: 1940, fin: 1944, type: "transition", ligne: "regimes",
   nom: "État français (Vichy)",
   dates: "1940 – 1944",
   resume: "Régime autoritaire dirigé par Pétain après la défaite. Révolution nationale, collaboration d'État, et participation de l'administration française à la persécution puis à la déportation des Juifs.",
@@ -270,7 +307,7 @@ const PERIODES = [
 },
 {
   id: "gprf",
-  debut: 1944, fin: 1946, type: "transition",
+  debut: 1944, fin: 1946, type: "transition", ligne: "regimes",
   nom: "Gouvernement provisoire",
   dates: "1944 – 1946",
   resume: "Le GPRF, dirigé par de Gaulle, rétablit la légalité républicaine et pose en deux ans les fondations sociales du pays.",
@@ -290,7 +327,7 @@ const PERIODES = [
 },
 {
   id: "quatrieme-republique",
-  debut: 1946, fin: 1958, type: "republique",
+  debut: 1946, fin: 1958, type: "republique", ligne: "regimes",
   nom: "Quatrième République",
   dates: "1946 – 1958",
   resume: "Régime parlementaire à l'exécutif faible : vingt-quatre gouvernements en douze ans. Elle réussit la reconstruction et lance la construction européenne, mais se brise sur la décolonisation.",
@@ -310,7 +347,7 @@ const PERIODES = [
 },
 {
   id: "cinquieme-republique",
-  debut: 1958, fin: 2026, type: "republique",
+  debut: 1958, fin: 2026, type: "republique", ligne: "regimes",
   nom: "Cinquième République",
   dates: "1958 – aujourd'hui",
   resume: "Exécutif fort, président élu au suffrage universel direct depuis 1962. Le régime le plus stable depuis la Troisième, régulièrement rebattu par les cohabitations et une trentaine de révisions.",
@@ -331,13 +368,15 @@ const PERIODES = [
   fin_texte: "—"
 }
 ];
+PERIODES.sort((a, b) => a.debut - b.debut);
 
 const TYPES = {
   monarchie:  { label: "Monarchie",  couleur: "#2F4B7C", fond: "#EAEEF5" },
   republique: { label: "République", couleur: "#A33A38", fond: "#F7EBEA" },
   empire:     { label: "Empire",     couleur: "#8A6A2F", fond: "#F5EFE2" },
   transition: { label: "Transition", couleur: "#6E6E6E", fond: "#EFEEEC" },
-  antiquite:  { label: "Antiquité",  couleur: "#B5562E", fond: "#F6EAE2" }
+  antiquite:  { label: "Antiquité",  couleur: "#B5562E", fond: "#F6EAE2" },
+  guerre:     { label: "Conflit mondial", couleur: "#5B6B45", fond: "#EEF0E8" }
 };
 </script>
 
@@ -370,9 +409,6 @@ const TYPES = {
     letter-spacing: -0.01em;
   }
   .soustitre { color: var(--ink-2); font-size: 14px; margin: 0; }
-  .autres-pages { margin: 10px 0 0; font-size: 13.5px; }
-  .autres-pages a { color: var(--ink-2); }
-  .autres-pages a:hover { color: var(--ink); }
 
   /* ---------- Frise ---------- */
   .frise-toolbar { display: flex; justify-content: flex-end; gap: 4px; margin: 28px 0 6px; }
@@ -385,22 +421,30 @@ const TYPES = {
   .zoom-btn:hover { border-color: var(--ink-3); color: var(--ink); }
   .zoom-btn:active { background: #F1EFEA; }
   .frise-bloc { margin: 0 0 8px; position: relative; }
+  .frise-cadre { display: flex; align-items: stretch; gap: 10px; }
+  .frise-etiquettes {
+    flex: none; display: flex; flex-direction: column; gap: 2px;
+    width: 58px;
+  }
+  .frise-etiquette-ligne {
+    display: flex; align-items: center;
+    font-size: 10.5px; font-weight: 600; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: .04em; line-height: 1.2;
+  }
   .frise-scroll {
+    flex: 1; min-width: 0;
     overflow-x: auto; overflow-y: hidden;
     scrollbar-width: thin;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-x;
   }
   .frise-bloc::after {
-    content: ""; position: absolute; top: 0; right: 0; height: 52px; width: 28px;
+    content: ""; position: absolute; top: 0; right: 0; bottom: 28px; width: 28px;
     background: linear-gradient(to right, transparent, var(--bg));
     pointer-events: none;
   }
-  .frise {
-    display: flex; height: 52px; gap: 2px;
-    border-radius: 6px; overflow: hidden;
-    width: max-content; min-width: 100%;
-  }
+  #friseLignes { display: flex; flex-direction: column; gap: 2px; width: max-content; min-width: 100%; }
+  .frise-ligne { display: flex; gap: 2px; border-radius: 6px; overflow: hidden; }
   .seg {
     flex: none; border: 0; padding: 0 10px; cursor: pointer;
     min-width: 5px; position: relative;
@@ -428,6 +472,7 @@ const TYPES = {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 1px 2px rgba(0,0,0,.25);
   }
+  .espace { flex: none; }
   .coupure {
     flex: none; align-self: stretch; cursor: help;
     background: repeating-linear-gradient(135deg, var(--card) 0 4px, var(--line) 4px 8px);
@@ -512,6 +557,8 @@ const TYPES = {
     .fiche-corps { padding: 18px 18px 20px; }
     h3 { margin-left: -18px; margin-right: -18px; padding-left: 18px; padding-right: 18px; }
     .entete-titre { font-size: 17px; }
+    .frise-etiquettes { width: 40px; }
+    .frise-etiquette-ligne { font-size: 9px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
@@ -522,16 +569,17 @@ const TYPES = {
   <header>
     <h1>Histoire</h1>
     <p class="soustitre" id="soustitre"></p>
-    <p class="autres-pages">Voir aussi : <a href="premiere-guerre-mondiale.html">Première Guerre mondiale</a></p>
-
     <div class="frise-toolbar">
       <button type="button" class="zoom-btn" id="zoomMoins" aria-label="Réduire la frise">−</button>
       <button type="button" class="zoom-btn" id="zoomPlus" aria-label="Agrandir la frise">+</button>
     </div>
     <div class="frise-bloc">
-      <div class="frise-scroll" id="friseScroll">
-        <div class="frise" id="frise" role="group" aria-label="Frise chronologique"></div>
-        <div class="regle" id="regle"></div>
+      <div class="frise-cadre">
+        <div class="frise-etiquettes" id="friseEtiquettes"></div>
+        <div class="frise-scroll" id="friseScroll">
+          <div id="friseLignes" role="group" aria-label="Frise chronologique"></div>
+          <div class="regle" id="regle"></div>
+        </div>
       </div>
     </div>
   </header>
@@ -560,7 +608,10 @@ const duree = p => Math.max(p.fin - p.debut, 0.3);
 const LIENS_SPECIAUX = {
   "Bonaparte": "Napoléon Ier",
   "Comte d'Artois": "Charles X",
-  "Cavaignac": "Eugène Cavaignac"
+  "Cavaignac": "Eugène Cavaignac",
+  "Guillaume II": "Guillaume II (empereur allemand)",
+  "Offensive du Chemin des Dames": "Bataille du Chemin des Dames",
+  "Bataille de la Marne": "Première bataille de la Marne"
 };
 function lienWikipedia(nom) {
   const cible = (LIENS_SPECIAUX[nom] || nom).replace(/ /g, "_");
@@ -594,47 +645,94 @@ function xVersAnnee(x) {
   return COUPURE.fin + (x - avant - COUPURE.largeur) / PX_PAR_AN;
 }
 
+/* La frise empile plusieurs lignes indépendantes (une par grande catégorie),
+   chacune avec sa propre hauteur, mais toutes calées sur le même axe des
+   années — la coupure et le zoom s'appliquent donc identiquement à toutes. */
+const LIGNES = [
+  { id: "conflits", etiquette: "Conflits", hauteur: 30 },
+  { id: "regimes", etiquette: "Régimes", hauteur: 52 }
+];
+
+function construireSegment(p, largeur, hauteur) {
+  const b = document.createElement("button");
+  b.className = "seg";
+  b.style.width = largeur + "px";
+  b.style.background = TYPES[p.type].couleur;
+  b.title = p.dates + " — " + p.nom;
+  b.setAttribute("aria-label", p.nom + ", " + p.dates);
+  b.dataset.id = p.id;
+  if (largeur > 80) {
+    const texte = document.createElement("span");
+    texte.className = "seg-texte";
+    const nom = document.createElement("span");
+    nom.className = "seg-nom";
+    nom.textContent = p.nom;
+    texte.appendChild(nom);
+    if (largeur > 150 && hauteur >= 44) {
+      const dates = document.createElement("span");
+      dates.className = "seg-dates";
+      dates.textContent = p.dates;
+      texte.appendChild(dates);
+    }
+    b.appendChild(texte);
+  }
+  b.onclick = () => choisir(p.id);
+  return b;
+}
+
+function ajouterEspace(conteneur, x0, x1) {
+  if (x1 <= x0) return;
+  const coupureX0 = anneeVersX(COUPURE.debut), coupureX1 = coupureX0 + COUPURE.largeur;
+  const ajouterSpacer = (largeur) => {
+    if (largeur <= 0) return;
+    const s = document.createElement("div");
+    s.className = "espace";
+    s.style.width = largeur + "px";
+    conteneur.appendChild(s);
+  };
+  if (x0 <= coupureX0 && x1 >= coupureX1) {
+    ajouterSpacer(coupureX0 - x0);
+    const c = document.createElement("div");
+    c.className = "coupure";
+    c.style.width = COUPURE.largeur + "px";
+    c.title = (COUPURE.fin - COUPURE.debut) + " ans non représentés à l'échelle";
+    conteneur.appendChild(c);
+    ajouterSpacer(x1 - coupureX1);
+  } else {
+    ajouterSpacer(x1 - x0);
+  }
+}
+
 function construireFrise() {
   document.getElementById("soustitre").textContent =
-    PERIODES.length + " périodes, de l'Antiquité à aujourd'hui. Chaque barre est proportionnelle à sa durée — le vide entre l'Antiquité et 1789 est volontairement compressé.";
+    PERIODES.length + " périodes sur deux lignes — conflits et régimes — de l'Antiquité à aujourd'hui. Chaque barre est proportionnelle à sa durée ; le vide entre l'Antiquité et 1789 est volontairement compressé.";
 
   const largeurTotale = anneeVersX(FIN);
 
-  const f = document.getElementById("frise");
-  f.innerHTML = "";
-  f.style.width = largeurTotale + "px";
-  PERIODES.forEach(p => {
-    const largeur = duree(p) * PX_PAR_AN;
-    const b = document.createElement("button");
-    b.className = "seg";
-    b.style.width = largeur + "px";
-    b.style.background = TYPES[p.type].couleur;
-    b.title = p.dates + " — " + p.nom;
-    b.setAttribute("aria-label", p.nom + ", " + p.dates);
-    if (largeur > 80) {
-      const texte = document.createElement("span");
-      texte.className = "seg-texte";
-      const nom = document.createElement("span");
-      nom.className = "seg-nom";
-      nom.textContent = p.nom;
-      texte.appendChild(nom);
-      if (largeur > 150) {
-        const dates = document.createElement("span");
-        dates.className = "seg-dates";
-        dates.textContent = p.dates;
-        texte.appendChild(dates);
-      }
-      b.appendChild(texte);
-    }
-    b.onclick = () => choisir(p.id);
-    f.appendChild(b);
-    if (p.fin === COUPURE.debut) {
-      const c = document.createElement("div");
-      c.className = "coupure";
-      c.style.width = COUPURE.largeur + "px";
-      c.title = (COUPURE.fin - COUPURE.debut) + " ans non représentés à l'échelle";
-      f.appendChild(c);
-    }
+  const etq = document.getElementById("friseEtiquettes");
+  etq.innerHTML = "";
+  const lignesConteneur = document.getElementById("friseLignes");
+  lignesConteneur.innerHTML = "";
+  lignesConteneur.style.width = largeurTotale + "px";
+
+  LIGNES.forEach(ligne => {
+    const lab = document.createElement("div");
+    lab.className = "frise-etiquette-ligne";
+    lab.style.height = ligne.hauteur + "px";
+    lab.textContent = ligne.etiquette;
+    etq.appendChild(lab);
+
+    const row = document.createElement("div");
+    row.className = "frise-ligne";
+    row.style.height = ligne.hauteur + "px";
+    let curseurX = 0;
+    PERIODES.filter(p => p.ligne === ligne.id).sort((a, b) => a.debut - b.debut).forEach(p => {
+      const debutX = anneeVersX(p.debut), finX = anneeVersX(p.fin);
+      ajouterEspace(row, curseurX, debutX);
+      row.appendChild(construireSegment(p, finX - debutX, ligne.hauteur));
+      curseurX = finX;
+    });
+    lignesConteneur.appendChild(row);
   });
 
   const r = document.getElementById("regle");
@@ -890,9 +988,8 @@ function choisir(id) {
   }
 }
 function appliquerEtatFrise() {
-  document.querySelectorAll("#frise .seg").forEach((s, i) => {
-    const p = PERIODES[i];
-    s.setAttribute("aria-pressed", p.id === selection);
+  document.querySelectorAll("#friseLignes .seg").forEach(s => {
+    s.setAttribute("aria-pressed", s.dataset.id === selection);
   });
 }
 function rendre() {
