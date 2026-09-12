@@ -28,344 +28,416 @@
    ========================================================================= */
 const PERIODES = [
 {
-  id: "guerres-mediques",
+  id: "guerre-de-troie",
+  debut: -1250, fin: -1180, type: "antiquite", ligne: "conflits",
+  nom: "Guerre de Troie",
+  dates: "1250 – 1180 av. J.-C."
+},
+{
+  id: "grece-antique",
   debut: -500, fin: -465, type: "antiquite", ligne: "conflits",
-  nom: "Guerres médiques",
+  nom: "Grèce antique",
   dates: "500 – 465 av. J.-C.",
-  resume: "Une révolte de cités grecques d'Asie mineure contre la Perse dégénère en deux invasions ratées de la Grèce continentale. Athènes et Sparte, rivales, s'unissent le temps de repousser le plus grand empire du monde connu.",
-  cle: "Face à un empire cent fois plus vaste, les cités grecques ne l'emportent ni par le nombre ni par la richesse, mais par le terrain choisi — Thermopyles, Salamine — et une alliance de circonstance qui ne survivra pas à la victoire.",
   chrono: [
-    ["500 av. J.-C.", "Révolte de l'Ionie : Athènes envoie des troupes soutenir les Grecs d'Ionie, en Asie mineure, contre la domination perse. Prise de Sardes et incendie de son temple — cela déclenche la fureur de Darius Ier."],
-    ["494 av. J.-C.", "Bataille de Ladé : défaite navale des cités ioniennes, chute de Milet, fin de la révolte."],
-    ["490 av. J.-C.", "Bataille de Marathon : Darius envoie une flotte punitive contre Athènes et Érétrie. Miltiade écrase l'armée perse sur la plage de Marathon."],
-    ["486 av. J.-C.", "Mort de Darius Ier ; Xerxès Ier lui succède et prépare une invasion à bien plus grande échelle."],
-    ["480 av. J.-C.", "Seconde invasion perse : Xerxès franchit l'Hellespont. Thermopyles — Léonidas et ses 300 Spartiates retardent l'armée perse au prix de leur vie. Athènes est évacuée puis incendiée. Salamine — victoire navale grecque décisive menée par Thémistocle ; Xerxès rentre en Perse."],
-    ["479 av. J.-C.", "Platées et Mycale : les Grecs écrasent, le même jour selon la tradition, l'armée perse restée sur le continent et détruisent sa flotte."],
-    ["478-477 av. J.-C.", "Fondation de la Ligue de Délos sous l'hégémonie d'Athènes, pour poursuivre la guerre contre la Perse."],
-    ["466 av. J.-C.", "Bataille de l'Eurymédon : Cimon défait la flotte et l'armée perses en Asie mineure."],
-    ["465 av. J.-C.", "Xerxès est assassiné par le chef de sa garde ; Artaxerxès Ier lui succède."]
+    ["500 av. J.-C.", "Révolte de l'Ionie : Athènes envoie des troupes pour soutenir les Grecs d'Ionie, en Asie mineure. Prise de Sardes et incendie de son temple. Déclenche la fureur de Darius."],
+    ["490 av. J.-C.", "Darius envoie une flotte de 600 navires traverser la mer Égée avec 100 000 hommes pour marcher sur Athènes. Les Grecs, 9 000 hoplites, rencontrent les Perses à la bataille de Marathon. Thémistocle, l'un des généraux athéniens, est progressiste ; Aristide, général d'une tribu alliée, est conservateur. Les Perses n'ont pas encore leur cavalerie ; les Grecs passent à l'assaut et l'emportent — les Perses, venus d'une quarantaine de royaumes de l'empire, sont moins coordonnés."],
+    ["486 av. J.-C.", "Xerxès succède à Darius.", [
+      "Thémistocle défie l'aristocratie en défendant le peuple. Il entreprend de construire une flotte de 200 galères de combat ; Aristide s'y montre réticent.",
+      "En Perse, les peuples de l'empire sont multiethniques, sans religion ni langue imposées. Les satrapes dirigent les provinces de l'empire. Xerxès se prépare à envahir la Grèce ; Artémise, reine d'Halicarnasse, sera commandante de flotte pour cette invasion.",
+      "Thémistocle cherche à unifier les cités-États grecques, notamment en obtenant le soutien de Sparte."
+    ]],
+    ["481 av. J.-C.", "Les Perses se rassemblent à Sardes, point de départ de la campagne contre Athènes : 400 000 personnes. Plan initial : passer par la terre avec le soutien de la flotte.", [
+      "Xerxès fait construire un pont flottant pour franchir le détroit des Dardanelles.",
+      "La découverte d'un filon d'argent divise Athènes : Aristide veut que les bénéfices soient partagés entre citoyens selon la tradition, Thémistocle veut qu'ils financent la flotte. Il convainc le peuple ; Aristide est ostracisé et les travaux de la flotte commencent."
+    ]],
+    ["480 av. J.-C.", "L'armée de Xerxès entre en mouvement ; le pont des Dardanelles doit être refait.", [
+      "Congrès de Corinthe : les Grecs débattent d'un plan d'action.",
+      "La Thessalie capitule et se rallie à Xerxès, ravitaillant son armée.",
+      "Les Grecs se positionnent au défilé des Thermopyles et bloquent la flotte perse dans le détroit. Léonidas, roi de Sparte, commande la force terrestre ; la flotte de Thémistocle est au cap Artémision. Une tempête détruit un tiers de la flotte perse.",
+      "Éphialtès révèle aux Perses un passage alternatif. Léonidas décide de rester avec ses Spartiates pour permettre aux autres Grecs de battre en retraite.",
+      "Les Athéniens se réfugient sur l'île de Salamine.",
+      "Les Perses brûlent les temples en représailles de l'incendie de Sardes, puis incendient Athènes.",
+      "Thémistocle fait croire à Xerxès qu'il doit agir vite ; Artémise tente de le convaincre de ne pas tomber dans le piège.",
+      "Bataille navale du détroit de Salamine : les Perses, pris en étau, subissent de lourdes pertes. Artémise trahit Xerxès pour se sauver.",
+      "Le régime évolue vers plus de démocratie : le peuple obtient davantage de droits, les rameurs ayant participé au sauvetage de la Grèce.",
+      "Xerxès rentre dans l'empire perse et se concentre sur sa consolidation, laissant de côté la défaite de Salamine.",
+      "Les Athéniens prennent la tête d'une coalition grecque pour chasser les Perses de la Grèce : création de la Ligue de Délos."
+    ]],
+    ["471 av. J.-C.", "Thémistocle est à son tour ostracisé, Aristide étant revenu l'accuser de vouloir instaurer une tyrannie ; il finit par fuir dans l'empire perse, où il est accueilli et devient satrape de Magnésie."],
+    ["465 av. J.-C.", "Xerxès est assassiné. Artaxerxès Ier est son successeur."]
   ],
-  gens: [
-    { n: "Darius Ier", r: "roi des Perses" },
-    { n: "Xerxès Ier", r: "roi des Perses" },
-    { n: "Artaxerxès Ier", r: "roi des Perses" },
-    { n: "Aristagoras", r: "tyran de Milet" },
-    { n: "Miltiade", r: "vainqueur de Marathon" },
-    { n: "Léonidas Ier", r: "roi de Sparte" },
-    { n: "Thémistocle", r: "stratège athénien" },
-    { n: "Cimon", r: "stratège athénien" }
-  ],
-  evenements: ["Révolte de l'Ionie", "Bataille de Marathon", "Bataille des Thermopyles", "Bataille de Salamine", "Bataille de Platées", "Bataille de Mycale", "Ligue de Délos", "Bataille de l'Eurymédon"],
-  fin_titre: "Comment la guerre se termine",
-  fin_texte: "Après Platées et Mycale, l'initiative passe aux Grecs. Cimon achève de repousser la Perse hors de la mer Égée à l'Eurymédon ; la mort de Xerxès, assassiné par son propre garde, clôt le règne qui avait porté l'invasion."
-},
-{
-  id: "premiere-guerre-mondiale",
-  debut: 1914, fin: 1918, type: "guerre", ligne: "conflits",
-  nom: "Première Guerre mondiale",
-  dates: "1914 – 1918",
-  resume: "Un attentat à Sarajevo déclenche un système d'alliances qui embrase toute l'Europe. Quatre ans de guerre de position dans les tranchées, avant qu'une guerre censée durer quelques semaines n'engloutisse près de dix millions de soldats.",
-  cle: "La guerre change de nature en 1914 : l'offensive rapide promise par les états-majors s'enlise en quelques semaines dans une guerre de tranchées où l'artillerie et la mitrailleuse rendent toute avancée exorbitamment coûteuse.",
-  chrono: [
-    ["28 juin 1914", "Assassinat de l'archiduc François-Ferdinand à Sarajevo par Gavrilo Princip."],
-    ["28 juillet 1914", "L'Autriche-Hongrie déclare la guerre à la Serbie ; le jeu des alliances entraîne l'Europe entière en quelques jours."],
-    ["Août 1914", "Invasion allemande de la Belgique (plan Schlieffen) ; entrée en guerre de la France, de la Russie et du Royaume-Uni."],
-    ["6-12 septembre 1914", "Bataille de la Marne : l'avancée allemande est stoppée aux portes de Paris, le front se fige."],
-    ["1915", "Le front s'enterre : début de la guerre de tranchées ; première utilisation massive de gaz de combat à Ypres."],
-    ["21 fév. – 18 déc. 1916", "Bataille de Verdun : dix mois de combats, environ 300 000 morts, sans gain territorial décisif."],
-    ["1er juill. – 18 nov. 1916", "Bataille de la Somme : plus d'un million de victimes, premiers chars d'assaut engagés par les Britanniques."],
-    ["1917", "Mutineries dans l'armée française après l'échec de l'offensive du Chemin des Dames ; la révolution russe fait sortir la Russie du conflit."],
-    ["6 avril 1917", "Entrée en guerre des États-Unis."],
-    ["11 novembre 1918", "Armistice de Rethondes : l'Allemagne cesse les combats."]
-  ],
-  gens: [
-    { n: "Raymond Poincaré", r: "président de la République" },
-    { n: "Georges Clemenceau", r: "président du Conseil" },
-    { n: "Philippe Pétain", r: "vainqueur de Verdun" },
-    { n: "Ferdinand Foch", r: "maréchal, commandant suprême allié" },
-    { n: "Guillaume II", r: "empereur allemand" },
-    { n: "Woodrow Wilson", r: "président des États-Unis" }
-  ],
-  evenements: ["Bataille de la Marne", "Bataille de Verdun", "Bataille de la Somme", "Offensive du Chemin des Dames", "Armistice de 1918"],
-  fin_titre: "Comment la guerre se termine",
-  fin_texte: "L'arrivée des troupes américaines et l'épuisement des empires centraux, affaiblis par le blocus et la famine, précipitent l'effondrement du front allemand à l'automne 1918. L'Allemagne signe l'armistice le 11 novembre ; le traité de Versailles, signé en 1919, en dessinera les conséquences pour vingt ans."
-},
-{
-  id: "monarchie-constitutionnelle",
-  debut: 1789, fin: 1792, type: "monarchie", ligne: "regimes",
-  nom: "Monarchie constitutionnelle",
-  dates: "1789 – 1792",
-  resume: "La Révolution ne commence pas en république. Louis XVI reste roi mais partage désormais le pouvoir avec une Assemblée élue. Le régime tient trois ans et meurt de deux choses : la fuite du roi et l'entrée en guerre.",
-  cle: "Le point de bascule est Varennes. Tant que le roi joue le jeu, la monarchie constitutionnelle est crédible ; le jour où il fuit, elle ne l'est plus.",
-  chrono: [
-    ["5 mai 1789", "Ouverture des États généraux à Versailles"],
-    ["17 juin 1789", "Le Tiers état se proclame Assemblée nationale"],
-    ["20 juin 1789", "Serment du Jeu de paume"],
-    ["14 juillet 1789", "Prise de la Bastille"],
-    ["4 août 1789", "Abolition des privilèges"],
-    ["26 août 1789", "Déclaration des droits de l'homme et du citoyen"],
-    ["Octobre 1789", "Marche des femmes sur Versailles ; le roi est ramené à Paris"],
-    ["Juillet 1790", "Constitution civile du clergé — rupture avec Rome"],
-    ["20-21 juin 1791", "Fuite à Varennes"],
-    ["3 septembre 1791", "Adoption de la Constitution"],
-    ["20 avril 1792", "Déclaration de guerre à l'Autriche"],
-    ["10 août 1792", "Prise des Tuileries, suspension du roi"]
-  ],
-  gens: ["Louis XVI", "La Fayette", "Mirabeau", "Barnave", "Brissot"],
-  fin_texte: "La guerre tourne mal, le roi est soupçonné de trahison. La journée du 10 août 1792 emporte la monarchie."
+  gens: ["Xerxès Ier", "Darius Ier", "Thémistocle", "Aristide", "Artémise", "Léonidas Ier", "Éphialtès", "Oracle de Delphes", "Hérodote"]
 },
 {
   id: "premiere-republique",
   debut: 1792, fin: 1804, type: "republique", ligne: "regimes",
   nom: "Première République",
-  dates: "1792 – 1804",
-  resume: "Trois régimes sous un seul nom : la Convention, le Directoire, puis le Consulat. Bonaparte vide la République de son contenu avant de la remplacer officiellement.",
-  cle: "Cette république naît en guerre et invente la mobilisation totale. C'est ce qui produit à la fois la Terreur et l'armée qui portera Bonaparte au pouvoir.",
-  chrono: [
-    ["21 septembre 1792", "Abolition de la royauté, proclamation de la République"],
-    ["21 janvier 1793", "Exécution de Louis XVI"],
-    ["Avril 1793", "Création du Comité de salut public"],
-    ["Sept. 1793 – juill. 1794", "La Terreur"],
-    ["27 juillet 1794", "9 thermidor : chute de Robespierre"],
-    ["26 octobre 1795", "Installation du Directoire"],
-    ["9 novembre 1799", "18 brumaire : coup d'État de Bonaparte, Consulat"],
-    ["1801", "Concordat avec le Saint-Siège"],
-    ["1804", "Promulgation du Code civil"]
-  ],
-  gens: ["Robespierre", "Danton", "Saint-Just", "Marat", "Barras", "Bonaparte"],
-  fin_texte: "Le Consulat à vie prépare le terrain. En mai 1804, Bonaparte est proclamé empereur des Français."
+  dates: "1792 – 1804"
 },
 {
   id: "premier-empire",
-  debut: 1804, fin: 1814, type: "empire", ligne: "regimes",
+  debut: 1804, fin: 1815, type: "empire", ligne: "regimes",
   nom: "Premier Empire",
-  dates: "1804 – 1814",
-  resume: "Napoléon Ier domine l'Europe pendant huit ans, puis s'effondre en deux. L'Empire lègue à la France ses institutions administratives et son droit civil.",
-  cle: "L'Empire gagne toutes ses batailles rangées jusqu'à ce que l'Espagne et la Russie révèlent qu'il ne sait pas gagner une guerre d'occupation.",
-  chrono: [
-    ["2 décembre 1804", "Sacre à Notre-Dame"],
-    ["2 décembre 1805", "Austerlitz"],
-    ["1806", "Mise en place du Blocus continental"],
-    ["1808", "Début de la guerre d'Espagne"],
-    ["1812", "Campagne de Russie"],
-    ["Octobre 1813", "Défaite de Leipzig"],
-    ["6 avril 1814", "Abdication de Fontainebleau"]
-  ],
-  gens: ["Napoléon Ier", "Talleyrand", "Fouché", "Joséphine", "Ney", "Davout"],
-  fin_texte: "Campagne de France, entrée des coalisés dans Paris, abdication et exil à l'île d'Elbe."
+  dates: "1804 – 1815"
 },
 {
-  id: "premiere-restauration",
+  id: "restauration",
   debut: 1814, fin: 1815, type: "monarchie", ligne: "regimes",
-  nom: "Première Restauration",
-  dates: "1814 – 1815",
-  resume: "Louis XVIII, frère de Louis XVI, revient sur le trône dans les bagages des coalisés. Il octroie une Charte qui conserve l'essentiel de l'héritage révolutionnaire. Onze mois au total.",
-  cle: "La Charte est « octroyée », pas votée. Le roi concède des libertés, il ne reconnaît pas qu'elles lui sont opposables — toute la tension du siècle est là.",
-  chrono: [
-    ["6 avril 1814", "Le Sénat rappelle Louis XVIII"],
-    ["4 juin 1814", "Charte constitutionnelle"],
-    ["1er mars 1815", "Napoléon débarque à Golfe-Juan"],
-    ["20 mars 1815", "Louis XVIII fuit à Gand"]
-  ],
-  gens: ["Louis XVIII", "Talleyrand", "Comte d'Artois"],
-  fin_texte: "Le retour de Napoléon de l'île d'Elbe, sans qu'un coup de feu soit tiré contre lui."
+  nom: "Restauration",
+  dates: "1814 – 1815"
 },
 {
   id: "cent-jours",
-  debut: 1815, fin: 1815.3, type: "transition", ligne: "regimes",
-  nom: "Les Cent-Jours",
-  dates: "mars – juillet 1815",
-  resume: "Napoléon reprend le pouvoir sans combat, tente un empire libéral avec l'Acte additionnel, et perd tout à Waterloo en moins de trois mois.",
-  cle: "Le nom vient de la durée exacte entre le retour du roi à Paris et son second retour : 20 mars – 8 juillet 1815.",
-  chrono: [
-    ["1er mars 1815", "Débarquement à Golfe-Juan"],
-    ["20 mars 1815", "Entrée aux Tuileries"],
-    ["22 avril 1815", "Acte additionnel aux constitutions de l'Empire"],
-    ["18 juin 1815", "Waterloo"],
-    ["22 juin 1815", "Seconde abdication"]
-  ],
-  gens: ["Napoléon Ier", "Ney", "Benjamin Constant", "Wellington", "Blücher"],
-  fin_texte: "Waterloo, puis la déportation à Sainte-Hélène."
+  debut: 1815, fin: 1815, type: "transition", ligne: "regimes",
+  nom: "Cent-Jours",
+  dates: "1815"
+},
+{
+  id: "bataille-de-waterloo",
+  debut: 1815, fin: 1815, type: "bataille", ligne: "batailles",
+  nom: "Bataille de Waterloo",
+  dates: "1815"
 },
 {
   id: "seconde-restauration",
   debut: 1815, fin: 1830, type: "monarchie", ligne: "regimes",
   nom: "Seconde Restauration",
   dates: "1815 – 1830",
-  resume: "Louis XVIII puis Charles X. Un régime parlementaire censitaire tiraillé entre ultras et libéraux, qui finit par tenter le passage en force contre sa propre Charte.",
-  cle: "Charles X ne tombe pas pour avoir été réactionnaire, mais pour avoir suspendu la Charte par ordonnance. La limite du régime était constitutionnelle.",
   chrono: [
-    ["8 juillet 1815", "Retour de Louis XVIII après les Cent-Jours"],
-    ["Juin – octobre 1815", "Terreur blanche : massacres contre les bonapartistes"],
-    ["Août 1815", "Les ultras triomphent : la « Chambre introuvable »"],
-    ["Novembre 1815", "Second traité de Paris"],
-    ["1820", "Assassinat du duc de Berry, virage à droite"],
-    ["1824", "Avènement de Charles X"],
-    ["Juillet 1830", "Prise d'Alger"],
-    ["25 juillet 1830", "Ordonnances de Saint-Cloud"],
-    ["27-29 juillet 1830", "Les Trois Glorieuses"]
+    ["8 juillet 1815", "[Louis XVIII](https://fr.wikipedia.org/wiki/Louis_XVIII) le Bourbon revient sur le trône après les Cent-Jours de Napoléon. Retour de la [Monarchie constitutionnelle](https://fr.wikipedia.org/wiki/Monarchie_constitutionnelle)."],
+    ["28 août 1815", "Les [ultra-royalistes](https://fr.wikipedia.org/wiki/Ultraroyaliste) triomphent aux [élections](https://fr.wikipedia.org/wiki/%C3%89lections_l%C3%A9gislatives_fran%C3%A7aises_d%27ao%C3%BBt_1815) et forment la « [Chambre introuvable](https://fr.wikipedia.org/wiki/Chambre_introuvable) »."],
+    ["Juin – octobre 1815", "[Terreur blanche](https://fr.wikipedia.org/wiki/Terreur_blanche_de_1815) : des ultra-royalistes se livrent à des massacres contre les [bonapartistes](https://fr.wikipedia.org/wiki/Bonapartisme)."],
+    ["Novembre 1815", "Signature du [second traité de Paris](https://fr.wikipedia.org/wiki/Trait%C3%A9_de_Paris_(1815)).", [
+      "Armée d'occupation entretenue par la France.",
+      "Indemnités de 5-7 % du PIB français versées sur 5 ans.",
+      "La bourgeoisie veut conserver l'héritage impérial de Napoléon (libéralisme) tandis que l'aristocratie veut le retour de la monarchie absolue sans compromis."
+    ]],
+    ["1818", "[Congrès d'Aix-la-Chapelle](https://fr.wikipedia.org/wiki/Congr%C3%A8s_d%27Aix-la-Chapelle_(1818)).", [
+      "Admission du royaume de France à la [Sainte-Alliance](https://fr.wikipedia.org/wiki/Sainte-Alliance).",
+      "Retrait des troupes d'occupation de France."
+    ]],
+    ["14 février 1820", "Assassinat du [duc de Berry](https://fr.wikipedia.org/wiki/Charles-Ferdinand_d%E2%80%99Artois) (neveu du roi).", [
+      "Montée des ultra-royalistes (par la [loi du double vote](https://fr.wikipedia.org/wiki/Loi_du_double_vote)) → durcissement du régime."
+    ]],
+    ["1823", "[Expédition d'Espagne](https://fr.wikipedia.org/wiki/Exp%C3%A9dition_d%27Espagne) menée par le [duc d'Angoulême](https://fr.wikipedia.org/wiki/Louis_de_France_(1775-1844)).", [
+      "Rétablissement de la monarchie absolue en Espagne.",
+      "Libération du roi d'Espagne Bourbon [Ferdinand VII](https://fr.wikipedia.org/wiki/Ferdinand_VII)."
+    ]],
+    ["16 septembre 1824", "Avènement de [Charles X](https://fr.wikipedia.org/wiki/Charles_X) (comte d'Artois) après la mort de [Louis XVIII](https://fr.wikipedia.org/wiki/Louis_XVIII_de_France)."],
+    ["1830", "[Expédition d'Alger](https://fr.wikipedia.org/wiki/Exp%C3%A9dition_d%27Alger_(1830)). Charles X a besoin d'une victoire militaire. Début de la colonisation.", [
+      "Origine de la tension franco-algérienne : l'[affaire de Bachri-Busnach](https://fr.wikipedia.org/wiki/Affaire_de_Bachri-Busnach) — deux négociants juifs algériens fournissent en blé les armées du Directoire vers 1795-1796 sans être payés ; l'incident du « coup d'éventail » de 1827 met le feu aux poudres."
+    ]],
+    ["19 juillet 1830", "Après la dissolution de la Chambre par Charles X, de nouvelles élections entraînent la victoire d'une majorité d'opposants.", [
+      "**25 juillet 1830** : Charles X tente de résoudre cette situation par un coup d'État en signant les [Ordonnances de Saint-Cloud](https://fr.wikipedia.org/wiki/Ordonnances_de_Saint-Cloud) : suspension de la liberté de la presse, dissolution de la nouvelle Chambre, nouvelles élections et loi électorale modifiée en faveur des grands propriétaires."
+    ]],
+    ["27-29 juillet 1830", "Révolution des [Trois Glorieuses](https://fr.wikipedia.org/wiki/Trois_Glorieuses) contre Charles X suite aux Ordonnances de Saint-Cloud (tentative de reprise du pouvoir absolu).", [
+      "Suspension de la liberté de la presse.",
+      "Dissolution de la Chambre des députés.",
+      "Réduction du corps électoral pour écarter la bourgeoisie libérale."
+    ]],
+    ["9 août 1830", "Instauration de la monarchie de Juillet : [Louis-Philippe Ier](https://fr.wikipedia.org/wiki/Louis-Philippe_Ier) (duc d'Orléans) n'est pas sacré roi de France mais proclamé roi des Français, n'étant pas un Bourbon.", [
+      "Changement de dynastie : de la [maison de Bourbon](https://fr.wikipedia.org/wiki/Maison_cap%C3%A9tienne_de_Bourbon) à la [maison d'Orléans](https://fr.wikipedia.org/wiki/Quatri%C3%A8me_maison_d%27Orl%C3%A9ans)."
+    ]]
   ],
-  gens: ["Louis XVIII", "Charles X", "Villèle", "Decazes", "Chateaubriand"],
-  fin_texte: "Les Trois Glorieuses. Charles X abdique, la couronne passe à la branche d'Orléans."
+  gens: [
+    { n: "Louis XVIII", url: "https://fr.wikipedia.org/wiki/Louis_XVIII" },
+    { n: "Charles X", url: "https://fr.wikipedia.org/wiki/Charles_X" },
+    { n: "Duc de Berry", url: "https://fr.wikipedia.org/wiki/Charles-Ferdinand_d%E2%80%99Artois" },
+    { n: "Duc d'Angoulême", url: "https://fr.wikipedia.org/wiki/Louis_de_France_(1775-1844)" }
+  ],
+  evenements: [
+    { nom: "Seconde Restauration", url: "https://fr.wikipedia.org/wiki/Seconde_Restauration" },
+    { nom: "Terreur blanche", url: "https://fr.wikipedia.org/wiki/Terreur_blanche_de_1815" },
+    { nom: "Congrès d'Aix-la-Chapelle", url: "https://fr.wikipedia.org/wiki/Congr%C3%A8s_d%27Aix-la-Chapelle_(1818)" },
+    { nom: "Expédition d'Alger", url: "https://fr.wikipedia.org/wiki/Exp%C3%A9dition_d%27Alger_(1830)" },
+    { nom: "Ordonnances de Saint-Cloud", url: "https://fr.wikipedia.org/wiki/Ordonnances_de_Saint-Cloud" }
+  ]
 },
 {
-  id: "monarchie-juillet",
+  id: "monarchie-de-juillet",
   debut: 1830, fin: 1848, type: "monarchie", ligne: "regimes",
   nom: "Monarchie de Juillet",
   dates: "1830 – 1848",
-  resume: "Louis-Philippe est roi « des Français », pas « de France ». Monarchie bourgeoise et censitaire, économiquement prospère, politiquement sourde à la demande d'élargissement du suffrage.",
-  cle: "Le « enrichissez-vous » de Guizot résume l'erreur du régime : répondre par l'économie à une demande qui était politique.",
   chrono: [
-    ["9 août 1830", "Louis-Philippe roi des Français"],
-    ["1831 et 1834", "Révoltes des canuts à Lyon"],
-    ["1840", "Retour des cendres de Napoléon aux Invalides"],
-    ["1847", "Campagne des banquets réformistes"],
-    ["22-24 février 1848", "Révolution de Février"]
+    ["27-29 juillet 1830", "Révolution des [Trois Glorieuses](https://fr.wikipedia.org/wiki/Trois_Glorieuses) contre [Charles X](https://fr.wikipedia.org/wiki/Charles_X) suite aux [Ordonnances de Saint-Cloud](https://fr.wikipedia.org/wiki/Ordonnances_de_Saint-Cloud) (tentative de reprise de pouvoir absolu)."],
+    ["9 août 1830", "Instauration de la monarchie de Juillet : [Louis-Philippe Ier](https://fr.wikipedia.org/wiki/Louis-Philippe_Ier) n'est pas sacré roi de France, mais proclamé roi des Français (car ce n'est pas un Bourbon)."],
+    ["1831", "Insurrection des [Canuts](https://fr.wikipedia.org/wiki/Canut) (tisserands de la soie) à Lyon et répressions.", [
+      "Montée du mouvement ouvrier et républicain. Le régime se durcit.",
+      "Révolte non suivie par les autres villes."
+    ]],
+    ["1834", "Deuxième insurrection des Canuts à Lyon.", [
+      "Des vétérans rejoignent les Canuts.",
+      "Le soulèvement est écrasé.",
+      "Apparition du socialisme."
+    ]],
+    ["1839", "Demande de création des [Ateliers nationaux](https://fr.wikipedia.org/wiki/Ateliers_nationaux)."],
+    ["1846", "Crise économique, famine, chômage, colère populaire."],
+    ["1847", "[Campagne des banquets](https://fr.wikipedia.org/wiki/Campagne_des_banquets)."],
+    ["22-25 février 1848", "[Révolution française de 1848](https://fr.wikipedia.org/wiki/R%C3%A9volution_fran%C3%A7aise_de_1848) suite à l'interdiction d'un banquet."],
+    ["24 février 1848", "Abdication de Louis-Philippe Ier. Proclamation de la [Deuxième République](https://fr.wikipedia.org/wiki/Deuxi%C3%A8me_R%C3%A9publique_(France))."]
   ],
-  gens: ["Louis-Philippe", "Guizot", "Thiers", "Lamartine"],
-  fin_texte: "L'interdiction d'un banquet réformiste déclenche les journées de février 1848."
+  gens: [
+    { n: "Louis-Philippe Ier", url: "https://fr.wikipedia.org/wiki/Louis-Philippe_Ier" },
+    { n: "Adolphe Thiers", r: "ministre de l'Intérieur", url: "https://fr.wikipedia.org/wiki/Adolphe_Thiers" },
+    { n: "Eugène Delacroix", r: "peintre de La Liberté guidant le peuple", url: "https://fr.wikipedia.org/wiki/Eug%C3%A8ne_Delacroix" },
+    { n: "François-René de Chateaubriand", url: "https://fr.wikipedia.org/wiki/Fran%C3%A7ois-Ren%C3%A9_de_Chateaubriand" },
+    { n: "Karl Marx", url: "https://fr.wikipedia.org/wiki/Karl_Marx" }
+  ],
+  evenements: [
+    { nom: "Monarchie de Juillet", url: "https://fr.wikipedia.org/wiki/Monarchie_de_Juillet" },
+    { nom: "Ateliers nationaux", url: "https://fr.wikipedia.org/wiki/Ateliers_nationaux" }
+  ]
 },
 {
   id: "deuxieme-republique",
   debut: 1848, fin: 1852, type: "republique", ligne: "regimes",
   nom: "Deuxième République",
   dates: "1848 – 1852",
-  resume: "Suffrage universel masculin, ateliers nationaux, abolition de l'esclavage — puis la répression de juin et l'élection triomphale de Louis-Napoléon Bonaparte, qui la tue par coup d'État.",
-  cle: "Quatre ans qui contiennent tout : la promesse sociale de février, la fracture de juin, et la démonstration qu'un suffrage universel peut porter au pouvoir celui qui l'abolira.",
   chrono: [
-    ["24 février 1848", "Proclamation de la République"],
-    ["Mars 1848", "Suffrage universel masculin"],
-    ["27 avril 1848", "Abolition définitive de l'esclavage (décret Schœlcher)"],
-    ["22-26 juin 1848", "Journées de Juin, réprimées par Cavaignac"],
-    ["10 décembre 1848", "Louis-Napoléon Bonaparte élu président"],
-    ["1850", "Loi Falloux ; restriction du corps électoral"],
-    ["2 décembre 1851", "Coup d'État"]
+    ["22-25 février 1848", "[Révolution française](https://fr.wikipedia.org/wiki/R%C3%A9volution_fran%C3%A7aise_de_1848) de 1848.", [
+      "Le roi [Louis-Philippe](https://fr.wikipedia.org/wiki/Louis-Philippe_Ier) est contraint d'abdiquer."
+    ]],
+    ["24 février 1848", "Lamartine proclame la [Deuxième République](https://fr.wikipedia.org/wiki/Deuxi%C3%A8me_R%C3%A9publique_(France)).", [
+      "Le gouvernement provisoire instaurera le **suffrage universel masculin**,",
+      "rétablira la **liberté de réunion** et la **liberté de la presse**,",
+      "abolira **l'esclavage**."
+    ]],
+    ["23 avril 1848", "Premières élections législatives au suffrage universel masculin.", [
+      "Victoire des républicains modérés ([parti de l'Ordre](https://fr.wikipedia.org/wiki/Parti_de_l%27Ordre)) d'[Adolphe Thiers](https://fr.wikipedia.org/wiki/Adolphe_Thiers)."
+    ]],
+    ["21 juin 1848", "Fermeture des [Ateliers nationaux](https://fr.wikipedia.org/wiki/Ateliers_nationaux) (mesure sociale contre le chômage jugée trop coûteuse).", [
+      "**23-26 juin 1848 — [Journées de Juin](https://fr.wikipedia.org/wiki/Journ%C3%A9es_de_Juin)** : insurrection ouvrière violemment réprimée par le général Cavaignac. Rupture entre républicains modérés et ouvriers."
+    ]],
+    ["11 décembre 1848", "Élection du premier président de la République française au suffrage universel direct.", [
+      "Remportée par Louis-Napoléon Bonaparte, qui se présente pour le parti de l'Ordre avec le soutien d'[Adolphe Thiers](https://fr.wikipedia.org/wiki/Adolphe_Thiers)."
+    ]],
+    ["2 décembre 1851", "Coup d'État de Louis-Napoléon Bonaparte.", [
+      "Dissolution de l'Assemblée, arrestation des opposants.",
+      "Plébiscite organisé pour légitimer le coup d'État."
+    ]],
+    ["2 décembre 1852", "Rétablissement de l'Empire.", [
+      "Proclamation de [Napoléon III](https://fr.wikipedia.org/wiki/Napol%C3%A9on_III) comme empereur.",
+      "Le plébiscite national de novembre 1852 est ratifié par 96,86 % des suffrages exprimés."
+    ]]
   ],
-  gens: ["Lamartine", "Cavaignac", "Louis-Napoléon Bonaparte", "Ledru-Rollin", "Victor Schœlcher"],
-  fin_texte: "Le coup d'État du 2 décembre 1851, ratifié par plébiscite, puis rétablissement de l'Empire un an jour pour jour plus tard."
+  gens: [
+    { n: "Napoléon III", url: "https://fr.wikipedia.org/wiki/Napol%C3%A9on_III" },
+    { n: "Adolphe Thiers", url: "https://fr.wikipedia.org/wiki/Adolphe_Thiers" },
+    { n: "Louis-Philippe", url: "https://fr.wikipedia.org/wiki/Louis-Philippe_Ier" }
+  ],
+  evenements: [
+    { nom: "Deuxième République", url: "https://fr.wikipedia.org/wiki/Deuxi%C3%A8me_R%C3%A9publique_(France)" }
+  ]
 },
 {
   id: "second-empire",
   debut: 1852, fin: 1870, type: "empire", ligne: "regimes",
   nom: "Second Empire",
   dates: "1852 – 1870",
-  resume: "Napoléon III. Autoritaire jusqu'en 1860, puis « libéral ». C'est la France du rail, de la banque, d'Haussmann — et d'une politique extérieure qui finit à Sedan.",
-  cle: "Le régime se libéralise au moment précis où il s'affaiblit. C'est un schéma qu'on retrouve souvent : la concession arrive quand elle ne sauve plus rien.",
   chrono: [
-    ["2 décembre 1852", "Proclamation de l'Empire"],
-    ["1853-1870", "Travaux d'Haussmann à Paris"],
-    ["1854-1856", "Guerre de Crimée"],
-    ["1859", "Campagne d'Italie ; annexion de Nice et de la Savoie"],
-    ["1860", "Traité de libre-échange avec le Royaume-Uni"],
-    ["1861-1867", "Expédition du Mexique"],
-    ["1869", "Ouverture du canal de Suez"],
-    ["2 septembre 1870", "Défaite et capture de l'empereur à Sedan"]
+    ["2 décembre 1852", "Rétablissement de l'Empire.", [
+      "Le plébiscite national des 21 et 22 novembre 1852 est ratifié par 96,86 % des suffrages exprimés.",
+      "[Napoléon III](https://fr.wikipedia.org/wiki/Napol%C3%A9on_III) devient empereur.",
+      "Constitution de 1852 : pouvoir exécutif renforcé, législatif très affaibli (Assemblée sans pouvoir d'initiative)."
+    ]],
+    ["1853", "Début de l'urbanisme haussmannien à Paris."],
+    ["1853 – 1856", "[Guerre de Crimée](https://fr.wikipedia.org/wiki/Guerre_de_Crim%C3%A9e).", [
+      "Septembre 1855 : victoire à [Sébastopol](https://fr.wikipedia.org/wiki/Si%C3%A8ge_de_S%C3%A9bastopol_(1854-1855))."
+    ]],
+    ["1855", "Exposition universelle de 1855 (première en France)."],
+    ["1859", "[Campagne d'Italie](https://fr.wikipedia.org/wiki/Campagne_d%27Italie_(1859)).", [
+      "Juillet 1859 : armistice de Villafranca. La France obtient Nice et la Savoie en 1860.",
+      "Victoires françaises à [Magenta](https://fr.wikipedia.org/wiki/Bataille_de_Magenta) et [Solférino](https://fr.wikipedia.org/wiki/Bataille_de_Solf%C3%A9rino)."
+    ]],
+    ["1861 – 1867", "Expédition du Mexique."],
+    ["1864", "Instauration du droit de grève."],
+    ["1867", "Deuxième Exposition universelle de Paris."],
+    ["19 juillet 1870 – 29 janvier 1871", "[Guerre franco-prussienne](https://fr.wikipedia.org/wiki/Guerre_franco-allemande_de_1870).", [
+      "1er septembre 1870 : défaite à la [bataille de Sedan](https://fr.wikipedia.org/wiki/Bataille_de_Sedan), Napoléon III fait prisonnier."
+    ]],
+    ["4 septembre 1870", "Proclamation de la [Troisième République](https://fr.wikipedia.org/wiki/Troisi%C3%A8me_R%C3%A9publique_(France)) avec le [Gouvernement de la Défense nationale](https://fr.wikipedia.org/wiki/Gouvernement_de_la_D%C3%A9fense_nationale)."],
+    ["1er mars 1871", "Déchéance officielle de Napoléon III."]
   ],
-  gens: ["Napoléon III", "Eugénie", "Haussmann", "Morny", "Bismarck"],
-  fin_texte: "Sedan. La République est proclamée à Paris deux jours plus tard, le 4 septembre 1870."
+  gens: [
+    { n: "Napoléon III", url: "https://fr.wikipedia.org/wiki/Napol%C3%A9on_III" },
+    { n: "Patrice de Mac Mahon", url: "https://fr.wikipedia.org/wiki/Patrice_de_Mac_Mahon" },
+    { n: "Karl Marx", url: "https://fr.wikipedia.org/wiki/Karl_Marx" }
+  ],
+  evenements: [
+    { nom: "Second Empire", url: "https://fr.wikipedia.org/wiki/Second_Empire" }
+  ]
 },
 {
   id: "troisieme-republique",
   debut: 1870, fin: 1940, type: "republique", ligne: "regimes",
   nom: "Troisième République",
-  dates: "1870 – 1940",
-  resume: "Née d'une défaite, installée par une assemblée à majorité monarchiste, elle devient le plus long régime français depuis 1789. Elle fixe l'école, la laïcité et l'empire colonial.",
-  cle: "Soixante-dix ans, soit plus que tous les régimes de 1789 à 1870 réunis. Sa force paradoxale : être un compromis que personne n'avait vraiment voulu.",
-  chrono: [
-    ["4 septembre 1870", "Proclamation de la République"],
-    ["Mars – mai 1871", "Commune de Paris et Semaine sanglante"],
-    ["1875", "Lois constitutionnelles ; amendement Wallon"],
-    ["1881-1882", "Lois Ferry : école gratuite, laïque et obligatoire"],
-    ["1894-1906", "Affaire Dreyfus"],
-    ["9 décembre 1905", "Séparation des Églises et de l'État"],
-    ["1914-1918", "Première Guerre mondiale"],
-    ["1936", "Front populaire, accords de Matignon"],
-    ["10 juillet 1940", "Vote des pleins pouvoirs constituants à Pétain"]
-  ],
-  gens: ["Thiers", "Gambetta", "Jules Ferry", "Clemenceau", "Jaurès", "Léon Blum"],
-  fin_texte: "La défaite de mai-juin 1940, puis le vote du 10 juillet à Vichy par lequel l'Assemblée se saborde."
+  dates: "1870 – 1940"
 },
 {
-  id: "etat-francais",
-  debut: 1940, fin: 1944, type: "transition", ligne: "regimes",
-  nom: "État français (Vichy)",
-  dates: "1940 – 1944",
-  resume: "Régime autoritaire dirigé par Pétain après la défaite. Révolution nationale, collaboration d'État, et participation de l'administration française à la persécution puis à la déportation des Juifs.",
-  cle: "Le régime est né d'un vote régulier mais a été déclaré nul et non avenu à la Libération. Sa responsabilité propre a été reconnue officiellement par la France en 1995.",
-  chrono: [
-    ["22 juin 1940", "Armistice de Rethondes"],
-    ["10 juillet 1940", "Pleins pouvoirs à Pétain"],
-    ["3 octobre 1940", "Premier statut des Juifs"],
-    ["24 octobre 1940", "Entrevue de Montoire"],
-    ["16-17 juillet 1942", "Rafle du Vélodrome d'Hiver"],
-    ["Novembre 1942", "Occupation de la zone sud"],
-    ["27 mai 1943", "Première réunion du Conseil national de la Résistance"],
-    ["Août 1944", "Libération de Paris"]
-  ],
-  gens: ["Philippe Pétain", "Pierre Laval", "François Darlan", "Jean Moulin"],
-  fin_texte: "Les débarquements de 1944 et la Libération. Le gouvernement se replie à Sigmaringen."
+  id: "premiere-guerre-mondiale",
+  debut: 1914, fin: 1918, type: "guerre", ligne: "conflits",
+  nom: "Première Guerre mondiale",
+  dates: "1914 – 1918"
 },
 {
-  id: "gprf",
-  debut: 1944, fin: 1946, type: "transition", ligne: "regimes",
-  nom: "Gouvernement provisoire",
-  dates: "1944 – 1946",
-  resume: "Le GPRF, dirigé par de Gaulle, rétablit la légalité républicaine et pose en deux ans les fondations sociales du pays.",
-  cle: "Deux ans de provisoire produisent le droit de vote des femmes et la Sécurité sociale — davantage d'acquis durables que bien des régimes installés.",
-  chrono: [
-    ["21 avril 1944", "Ordonnance accordant le droit de vote aux femmes"],
-    ["Juin 1944", "Le CFLN devient GPRF"],
-    ["1945", "Nationalisations ; ordonnances créant la Sécurité sociale"],
-    ["29 avril 1945", "Premier vote des femmes, aux municipales"],
-    ["21 octobre 1945", "Référendum et élection d'une Assemblée constituante"],
-    ["20 janvier 1946", "Démission de de Gaulle"],
-    ["16 juin 1946", "Discours de Bayeux"],
-    ["13 octobre 1946", "Adoption de la Constitution par référendum"]
+  id: "entre-deux-guerres",
+  debut: 1918, fin: 1939, type: "guerre", ligne: "conflits",
+  nom: "L'Entre-deux-guerres",
+  dates: "1918 – 1939",
+  evenements: [
+    { nom: "L'Entre-deux-guerres", url: "https://fr.wikipedia.org/wiki/Entre-deux-guerres" }
   ],
-  gens: ["Charles de Gaulle", "Pierre Mendès France", "Ambroise Croizat", "Georges Bidault"],
-  fin_texte: "L'entrée en vigueur de la Constitution de la Quatrième République."
+  sections: [
+    {
+      titre: "1918 – 1923 · Les lendemains de la Grande Guerre",
+      chrono: [
+        ["28 juin 1919", "Le [traité de Versailles](https://fr.wikipedia.org/wiki/Trait%C3%A9_de_Versailles) redessine la carte de l'Europe, démantèle les empires et déclare l'Allemagne seule responsable du conflit.", [
+          "L'Allemagne ressent un *Diktat* humiliant.",
+          "L'Italie parle d'une « victoire mutilée » car elle n'obtient pas tous les territoires promis."
+        ]],
+        ["1920", "Naissance de la [Société des Nations](https://fr.wikipedia.org/wiki/Soci%C3%A9t%C3%A9_des_Nations), créée pour garantir la paix mondiale via la diplomatie collective.", [
+          "Affaiblie dès sa naissance : le Sénat américain refuse que les États-Unis y adhèrent."
+        ]],
+        ["1922", "L'Italie bascule dans le fascisme : profitant de la crise sociale et économique d'après-guerre, [Benito Mussolini](https://fr.wikipedia.org/wiki/Benito_Mussolini) organise la [Marche sur Rome](https://fr.wikipedia.org/wiki/Marche_sur_Rome) en octobre.", [
+          "Le roi le nomme chef du gouvernement ; il met progressivement en place une dictature totalitaire."
+        ]],
+        ["1923", "Crise de la Ruhr et hyperinflation : l'Allemagne n'arrive plus à payer ses réparations de guerre.", [
+          "Les troupes françaises et belges occupent la région industrielle de la Ruhr.",
+          "Pour payer les ouvriers en grève passive, l'Allemagne imprime de la monnaie en masse, déclenchant une hyperinflation catastrophique du mark."
+        ]]
+      ],
+      gens: [{ n: "Benito Mussolini", url: "https://fr.wikipedia.org/wiki/Benito_Mussolini" }],
+      evenements: [
+        { nom: "Traité de Versailles", url: "https://fr.wikipedia.org/wiki/Trait%C3%A9_de_Versailles" },
+        { nom: "Société des Nations", url: "https://fr.wikipedia.org/wiki/Soci%C3%A9t%C3%A9_des_Nations" },
+        { nom: "Marche sur Rome", url: "https://fr.wikipedia.org/wiki/Marche_sur_Rome" }
+      ]
+    },
+    {
+      titre: "1924 – 1929 · Les « Années folles » et l'illusion de la paix",
+      chrono: [
+        ["1924", "Le plan Dawes et la reprise : les Américains prêtent de l'argent à l'Allemagne pour stabiliser sa monnaie et lui permettre de payer la France et le Royaume-Uni, qui remboursent à leur tour leurs dettes aux États-Unis.", [
+          "L'économie mondiale redémarre : c'est le début des « années folles » (progrès technique, jazz, émancipation culturelle)."
+        ]],
+        ["1925", "Les accords de Locarno : l'Allemagne et la France signent un pacte qui garantit les frontières occidentales fixées à Versailles.", [
+          "On parle de « l'esprit de Locarno » : l'espoir sincère qu'il n'y aura plus jamais de guerre en Europe.",
+          "L'Allemagne intègre la SDN en 1926."
+        ]],
+        ["1928", "Le pacte Kellogg-Briand, signé par 63 pays (dont l'Allemagne, le Japon et les États-Unis), met solennellement la guerre « hors-la-loi » comme outil de politique nationale."],
+        ["Octobre 1929", "Le krach de Wall Street : la bourse de New York s'effondre.", [
+          "C'est le déclencheur de la Grande Dépression, une crise économique mondiale sans précédent qui va détruire l'illusion de paix des années 1920."
+        ]]
+      ],
+      evenements: [
+        { nom: "Accords de Locarno", url: "https://fr.wikipedia.org/wiki/Accords_de_Locarno" },
+        { nom: "Pacte Kellogg-Briand", url: "https://fr.wikipedia.org/wiki/Pacte_Briand-Kellogg" }
+      ]
+    },
+    {
+      titre: "1930 – 1934 · L'onde de choc de la crise et la fin des démocraties",
+      chrono: [
+        ["1930-1933", "La Grande Dépression mondiale : les États-Unis rapatrient leurs capitaux. Le chômage explose en Europe (il culmine à 40 % en Allemagne) ; le commerce mondial s'effondre."],
+        ["1931", "L'Allemagne suspend le paiement des réparations de guerre."],
+        ["1931", "Le Japon envahit la Mandchourie : des officiers de l'armée japonaise provoquent l'incident de Mukden (le Japon sabote sa propre voie ferrée en Chine) pour envahir cette région.", [
+          "Premier coup de poignard dans le contrat de la SDN, qui condamne l'invasion sans effet."
+        ]],
+        ["1932", "Le parti nazi remporte les élections fédérales."],
+        ["Janvier 1933", "Hitler accède au pouvoir : porté par la misère économique et la peur du communisme, le parti nazi devient la première force politique.", [
+          "[Adolf Hitler](https://fr.wikipedia.org/wiki/Adolf_Hitler) est nommé chancelier. En quelques mois, profitant de l'incendie du Reichstag pour accuser les communistes, il suspend les libertés civiles, interdit les autres partis et ouvre les premiers camps (Dachau).",
+          "L'[Enabling Act](https://fr.wikipedia.org/wiki/Loi_allemande_des_pleins_pouvoirs_de_1933) donne les pleins pouvoirs à Hitler : il n'a plus à consulter le Reichstag ou le président Hindenburg.",
+          "L'Allemagne quitte la SDN."
+        ]],
+        ["Mars 1933", "Le Japon quitte la SDN."],
+        ["1932-1933", "L'[Holodomor](https://fr.wikipedia.org/wiki/Holodomor) (famine) en Ukraine : en URSS, la collectivisation forcée des terres décidée par Staline provoque une famine orchestrée à grande échelle, entraînant la mort de 6 à 9 millions de personnes."],
+        ["1934", "La consolidation des dictatures : en Allemagne, la Nuit des Longs Couteaux élimine les opposants internes d'Hitler.", [
+          "À la mort d'Hindenburg le 4 août, il devient officiellement le *Führer*.",
+          "En Autriche, les nazis assassinent le chancelier Dollfuss, mais Mussolini bloque une première tentative d'annexion en massant ses troupes au Brenner."
+        ]]
+      ],
+      gens: [{ n: "Adolf Hitler", url: "https://fr.wikipedia.org/wiki/Adolf_Hitler" }],
+      evenements: [
+        { nom: "Holodomor", url: "https://fr.wikipedia.org/wiki/Holodomor" },
+        { nom: "Enabling Act", url: "https://fr.wikipedia.org/wiki/Loi_allemande_des_pleins_pouvoirs_de_1933" }
+      ]
+    },
+    {
+      titre: "1935 – 1937 · La marche forcée vers la guerre",
+      chrono: [
+        ["1935", "Le réarmement allemand : Hitler annonce le rétablissement de la conscription obligatoire et la création de la Luftwaffe, violant ouvertement le traité de Versailles.", [
+          "Le Royaume-Uni brise le front diplomatique commun en signant un accord naval bilatéral avec le Reich."
+        ]],
+        ["1935-1936", "Invasion de l'Éthiopie : Mussolini attaque l'Éthiopie à l'aide d'armes chimiques.", [
+          "La SDN vote des sanctions économiques dérisoires (qui excluent le pétrole), prouvant définitivement son inutilité. L'Éthiopie est annexée."
+        ]],
+        ["Mars 1936", "Remilitarisation de la Rhénanie : Hitler envoie ses troupes dans la zone démilitarisée frontalière de la France.", [
+          "Un coup de poker : si l'armée française avait bougé, les Allemands auraient dû reculer. Mais la France et le Royaume-Uni restent passifs."
+        ]],
+        ["1936", "[Léon Blum](https://fr.wikipedia.org/wiki/L%C3%A9on_Blum) devient président du Conseil après une majorité du Front populaire."],
+        ["1936-1939", "La guerre civile espagnole : le coup d'État du général [Francisco Franco](https://fr.wikipedia.org/wiki/Francisco_Franco) déclenche une guerre civile sanglante.", [
+          "Les démocraties choisissent la non-intervention ; l'URSS soutient les républicains tandis que l'Italie et l'Allemagne (Légion Condor) testent leurs armes en aidant Franco.",
+          "La ville de Guernica est rasée en 1937."
+        ]],
+        ["Été 1936", "Jeux olympiques de Berlin, vitrine de propagande nazie."],
+        ["1936", "Hitler lance un plan de quatre ans pour préparer l'Allemagne à la guerre."],
+        ["1936", "L'Axe Rome-Berlin : Mussolini se détache des démocraties (France et Royaume-Uni) et s'allie avec Hitler."],
+        ["1936-1938", "[Grandes Purges](https://fr.wikipedia.org/wiki/Grandes_Purges) : [Joseph Staline](https://fr.wikipedia.org/wiki/Joseph_Staline) fait éliminer ses opposants politiques, exécutés ou envoyés au Goulag."],
+        ["26 avril 1937", "Bombardement de Guernica par la Légion Condor allemande."],
+        ["Juillet 1937", "Guerre totale en Asie : l'incident du pont Marco Polo déclenche l'invasion générale de la Chine par le Japon, marquée par d'immenses violences contre les civils, comme le massacre de Nankin."]
+      ],
+      gens: [
+        { n: "Léon Blum", url: "https://fr.wikipedia.org/wiki/L%C3%A9on_Blum" },
+        { n: "Francisco Franco", url: "https://fr.wikipedia.org/wiki/Francisco_Franco" },
+        { n: "Joseph Staline", url: "https://fr.wikipedia.org/wiki/Joseph_Staline" }
+      ],
+      evenements: [
+        { nom: "Jeux olympiques de Berlin", url: "https://fr.wikipedia.org/wiki/Jeux_olympiques_d%27%C3%A9t%C3%A9_de_1936" },
+        { nom: "Guerre civile espagnole", url: "https://fr.wikipedia.org/wiki/Guerre_d%27Espagne" },
+        { nom: "Axe Rome-Berlin", url: "https://fr.wikipedia.org/wiki/Axe_Rome-Berlin" },
+        { nom: "Grandes Purges", url: "https://fr.wikipedia.org/wiki/Grandes_Purges" }
+      ]
+    },
+    {
+      titre: "1938 – 1939 · Le point de rupture",
+      chrono: [
+        ["Mars 1938", "L'Anschluss : l'armée allemande entre en Autriche sous les acclamations d'une partie de la population.", [
+          "L'Autriche est rattachée au Reich allemand sans la moindre réaction militaire occidentale."
+        ]],
+        ["Septembre 1938", "La crise des Sudètes et les accords de Munich : Hitler exige l'annexion d'une partie de la Tchécoslovaquie.", [
+          "Pour éviter la guerre, le Britannique Neville Chamberlain et le Français Daladier cèdent lors de la conférence de Munich, sacrifiant leur allié tchèque au nom de la politique d'« apaisement »."
+        ]],
+        ["Novembre 1938", "La Nuit de Cristal : à Paris, un jeune Juif assassine un diplomate allemand.", [
+          "Un pogrom d'État d'une violence extrême est déclenché par les nazis contre les Juifs d'Allemagne (synagogues brûlées, commerces pillés, 30 000 déportations)."
+        ]],
+        ["Mars 1939", "Le reniement de Munich : Hitler rompt sa promesse et envahit le reste de la Tchécoslovaquie.", [
+          "Les Alliés comprennent enfin que la diplomatie de l'apaisement a échoué."
+        ]],
+        ["Juin 1938", "Inondation du fleuve Jaune : [Chiang Kai-shek](https://en.wikipedia.org/wiki/Chiang_Kai-shek) ordonne de détruire volontairement les digues du fleuve Jaune pour freiner l'invasion militaire japonaise.", [
+          "Cette stratégie de la terre brûlée stoppe temporairement l'ennemi mais noie sa propre population, tuant entre 500 000 et 900 000 civils chinois."
+        ]],
+        ["Août 1939", "Le pacte germano-soviétique : à la surprise générale, l'Allemagne nazie et l'URSS communiste signent un pacte de non-agression.", [
+          "Une clause secrète prévoit le partage de la Pologne entre les deux puissances. Hitler s'assure ainsi de ne pas avoir à mener une guerre sur deux fronts."
+        ]],
+        ["1er septembre 1939", "L'invasion de la Pologne : l'Allemagne attaque la Pologne.", [
+          "Le 3 septembre, le Royaume-Uni et la France déclarent la guerre à l'Allemagne. La Seconde Guerre mondiale commence."
+        ]]
+      ],
+      gens: [
+        { n: "Neville Chamberlain", url: "https://fr.wikipedia.org/wiki/Neville_Chamberlain" },
+        { n: "Chiang Kai-shek", url: "https://en.wikipedia.org/wiki/Chiang_Kai-shek" }
+      ],
+      evenements: [
+        { nom: "Crise des Sudètes", url: "https://fr.wikipedia.org/wiki/Accords_de_Munich" },
+        { nom: "Nuit de Cristal", url: "https://fr.wikipedia.org/wiki/Nuit_de_Cristal" },
+        { nom: "Inondation du fleuve Jaune", url: "https://fr.wikipedia.org/wiki/Inondation_du_fleuve_Jaune_de_1938" }
+      ]
+    }
+  ]
 },
 {
-  id: "quatrieme-republique",
-  debut: 1946, fin: 1958, type: "republique", ligne: "regimes",
-  nom: "Quatrième République",
-  dates: "1946 – 1958",
-  resume: "Régime parlementaire à l'exécutif faible : vingt-quatre gouvernements en douze ans. Elle réussit la reconstruction et lance la construction européenne, mais se brise sur la décolonisation.",
-  cle: "Elle bâtit l'Europe et l'État-providence pendant qu'elle s'effondre sur l'Algérie. Le jugement sévère qu'on en fait vient de son instabilité, pas de son bilan.",
-  chrono: [
-    ["27 octobre 1946", "Constitution de la IVe République"],
-    ["1947-1954", "Guerre d'Indochine ; Diên Biên Phu en mai 1954"],
-    ["18 avril 1951", "Traité instituant la CECA"],
-    ["1er novembre 1954", "Début de la guerre d'Algérie"],
-    ["1956", "Loi-cadre Defferre ; crise de Suez"],
-    ["25 mars 1957", "Traité de Rome"],
-    ["13 mai 1958", "Putsch d'Alger"],
-    ["1er juin 1958", "De Gaulle investi président du Conseil"]
-  ],
-  gens: ["Vincent Auriol", "Pierre Mendès France", "Robert Schuman", "Guy Mollet", "René Coty"],
-  fin_texte: "La crise du 13 mai 1958 : l'Assemblée délègue le pouvoir constituant à de Gaulle."
-},
-{
-  id: "cinquieme-republique",
-  debut: 1958, fin: 2026, type: "republique", ligne: "regimes",
-  nom: "Cinquième République",
-  dates: "1958 – aujourd'hui",
-  resume: "Exécutif fort, président élu au suffrage universel direct depuis 1962. Le régime le plus stable depuis la Troisième, régulièrement rebattu par les cohabitations et une trentaine de révisions.",
-  cle: "Ce qui change vraiment la nature du régime n'est pas le texte de 1958 mais la réforme de 1962 : un président élu directement par le peuple n'a plus le même poids face au Parlement.",
-  chrono: [
-    ["4 octobre 1958", "Promulgation de la Constitution"],
-    ["18 mars 1962", "Accords d'Évian"],
-    ["28 octobre 1962", "Référendum sur l'élection du président au suffrage direct"],
-    ["Mai 1968", "Crise sociale et politique"],
-    ["1974", "Majorité abaissée à 18 ans ; saisine du Conseil constitutionnel élargie"],
-    ["1981", "Première alternance ; abolition de la peine de mort"],
-    ["1986", "Première cohabitation"],
-    ["1992", "Traité de Maastricht"],
-    ["2000", "Passage au quinquennat"],
-    ["2008", "Révision constitutionnelle ; question prioritaire de constitutionnalité"]
-  ],
-  gens: ["Charles de Gaulle", "Michel Debré", "Georges Pompidou", "François Mitterrand", "Jacques Chirac"],
-  fin_texte: "—"
+  id: "seconde-guerre-mondiale",
+  debut: 1939, fin: 1945, type: "guerre", ligne: "conflits",
+  nom: "Seconde Guerre mondiale",
+  dates: "1939 – 1945"
 }
 ];
 PERIODES.sort((a, b) => a.debut - b.debut);
@@ -376,7 +448,8 @@ const TYPES = {
   empire:     { label: "Empire",     couleur: "#8A6A2F", fond: "#F5EFE2" },
   transition: { label: "Transition", couleur: "#6E6E6E", fond: "#EFEEEC" },
   antiquite:  { label: "Antiquité",  couleur: "#B5562E", fond: "#F6EAE2" },
-  guerre:     { label: "Conflit mondial", couleur: "#5B6B45", fond: "#EEF0E8" }
+  guerre:     { label: "Conflit",    couleur: "#5B6B45", fond: "#EEF0E8" },
+  bataille:   { label: "Bataille",   couleur: "#5C6670", fond: "#EEF0F1" }
 };
 </script>
 
@@ -534,8 +607,22 @@ const TYPES = {
     content: ""; flex: none; width: 6px; height: 6px; margin-top: 8px;
     border-radius: 50%; background: var(--accent);
   }
+  .chrono-corps { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
   .chrono p { margin: 0; font-size: 14.5px; line-height: 1.6; max-width: 62ch; }
   .chrono .date { font-weight: 600; color: var(--ink); }
+  .sous-chrono {
+    list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px;
+  }
+  .sous-chrono li {
+    font-size: 13.5px; line-height: 1.55; color: var(--ink-2); max-width: 60ch;
+    padding-left: 16px; position: relative;
+  }
+  .sous-chrono li::before {
+    content: ""; position: absolute; left: 0; top: 7px;
+    width: 5px; height: 5px; border-radius: 50%; border: 1.5px solid var(--ink-3);
+  }
+  .lien-inline { color: var(--accent); }
+  .vide { color: var(--ink-3); font-style: italic; margin: 0; }
   .gens { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
   .gens li { font-size: 14px; line-height: 1.4; }
   .gens a {
@@ -597,7 +684,7 @@ const DEBUT = -500, FIN = 2026;
 // largeur fixe, comme un axe brisé sur un graphique.
 const COUPURE = { debut: -465, fin: 1789, largeur: 40 };
 
-let selection = "monarchie-constitutionnelle";
+let selection = PERIODES[0].id;
 
 /* ---------- Utilitaires ---------- */
 const duree = p => Math.max(p.fin - p.debut, 0.3);
@@ -611,7 +698,12 @@ const LIENS_SPECIAUX = {
   "Cavaignac": "Eugène Cavaignac",
   "Guillaume II": "Guillaume II (empereur allemand)",
   "Offensive du Chemin des Dames": "Bataille du Chemin des Dames",
-  "Bataille de la Marne": "Première bataille de la Marne"
+  "Bataille de la Marne": "Première bataille de la Marne",
+  "Éphialtès": "Éphialtès de Trachis",
+  "Artémise": "Artémise Ire",
+  "Aristide": "Aristide le Juste",
+  "Guerre Civile Espagnole": "Guerre d'Espagne",
+  "L'Axe Rome-Berlin": "Axe Rome-Berlin"
 };
 function lienWikipedia(nom) {
   const cible = (LIENS_SPECIAUX[nom] || nom).replace(/ /g, "_");
@@ -650,6 +742,7 @@ function xVersAnnee(x) {
    années — la coupure et le zoom s'appliquent donc identiquement à toutes. */
 const LIGNES = [
   { id: "conflits", etiquette: "Conflits", hauteur: 30 },
+  { id: "batailles", etiquette: "Batailles", hauteur: 22 },
   { id: "regimes", etiquette: "Régimes", hauteur: 52 }
 ];
 
@@ -705,7 +798,7 @@ function ajouterEspace(conteneur, x0, x1) {
 
 function construireFrise() {
   document.getElementById("soustitre").textContent =
-    PERIODES.length + " périodes sur deux lignes — conflits et régimes — de l'Antiquité à aujourd'hui. Chaque barre est proportionnelle à sa durée ; le vide entre l'Antiquité et 1789 est volontairement compressé.";
+    PERIODES.length + " périodes sur " + LIGNES.length + " lignes — " + LIGNES.map(l => l.etiquette.toLowerCase()).join(", ") + " — de l'Antiquité à aujourd'hui. Chaque barre est proportionnelle à sa durée ; le vide entre l'Antiquité et 1789 est volontairement compressé.";
 
   const largeurTotale = anneeVersX(FIN);
 
@@ -849,6 +942,123 @@ function construireListe() {
 }
 
 /* ---------- Fiche ---------- */
+/* Un fragment de texte peut contenir **gras** et [libellé](url) : on les
+   convertit en vrais nœuds plutôt que d'utiliser innerHTML. */
+function rendreTexteRiche(el, texte) {
+  const re = /\*\*(.+?)\*\*|\*(.+?)\*|\[([^\]]+)\]\(((?:[^()]|\([^)]*\))*)\)/g;
+  let dernier = 0, m;
+  while ((m = re.exec(texte))) {
+    if (m.index > dernier) el.append(texte.slice(dernier, m.index));
+    if (m[1] !== undefined) {
+      const b = document.createElement("strong");
+      b.textContent = m[1];
+      el.appendChild(b);
+    } else if (m[2] !== undefined) {
+      const i = document.createElement("em");
+      i.textContent = m[2];
+      el.appendChild(i);
+    } else {
+      const a = document.createElement("a");
+      a.textContent = m[3];
+      a.href = m[4];
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      a.className = "lien-inline";
+      el.appendChild(a);
+    }
+    dernier = re.lastIndex;
+  }
+  if (dernier < texte.length) el.append(texte.slice(dernier));
+}
+
+/* Une entrée de chronologie est [date, texte] ou [date, texte, sousPuces]. */
+function construireChrono(entrees) {
+  const liste = document.createElement("ul");
+  liste.className = "chrono";
+  entrees.forEach(([date, fait, sous]) => {
+    const li = document.createElement("li");
+    const corpsLi = document.createElement("div");
+    corpsLi.className = "chrono-corps";
+    const texte = document.createElement("p");
+    const dt = document.createElement("span");
+    dt.className = "date";
+    dt.textContent = date;
+    texte.appendChild(dt);
+    texte.append(" — ");
+    rendreTexteRiche(texte, fait);
+    corpsLi.appendChild(texte);
+    if (sous && sous.length) {
+      const sousListe = document.createElement("ul");
+      sousListe.className = "sous-chrono";
+      sous.forEach(ligneTexte => {
+        const sousLi = document.createElement("li");
+        rendreTexteRiche(sousLi, ligneTexte);
+        sousListe.appendChild(sousLi);
+      });
+      corpsLi.appendChild(sousListe);
+    }
+    li.appendChild(corpsLi);
+    liste.appendChild(li);
+  });
+  return liste;
+}
+
+/* Personnalités et Événements, côte à côte quand les deux existent. */
+function construirePied(gens, evenements) {
+  if (!(gens && gens.length) && !(evenements && evenements.length)) return null;
+  const pied = document.createElement("div");
+  pied.className = "pied";
+
+  if (gens && gens.length) {
+    const colGens = document.createElement("div");
+    colGens.appendChild(titre("Personnalités"));
+    const g = document.createElement("ul");
+    g.className = "gens";
+    gens.forEach(personne => {
+      const { nom: n, role } = typeof personne === "string" ? { nom: personne, role: null } : { nom: personne.n, role: personne.r };
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.textContent = n;
+      a.href = typeof personne === "object" && personne.url ? personne.url : lienWikipedia(n);
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      li.appendChild(a);
+      if (role) {
+        li.append(" ");
+        const r = document.createElement("span");
+        r.className = "role";
+        r.textContent = "— " + role;
+        li.appendChild(r);
+      }
+      g.appendChild(li);
+    });
+    colGens.appendChild(g);
+    pied.appendChild(colGens);
+  }
+
+  if (evenements && evenements.length) {
+    const colEven = document.createElement("div");
+    colEven.appendChild(titre("Événements"));
+    const ev = document.createElement("ul");
+    ev.className = "gens";
+    evenements.forEach(evenement => {
+      const { nom, url } = typeof evenement === "string" ? { nom: evenement, url: null } : evenement;
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.textContent = nom;
+      a.href = url || lienWikipedia(nom);
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      li.appendChild(a);
+      ev.appendChild(li);
+    });
+    colEven.appendChild(ev);
+    pied.appendChild(colEven);
+  }
+
+  return pied;
+}
+
 function construireFiche() {
   const p = PERIODES.find(x => x.id === selection);
   const t = TYPES[p.type];
@@ -876,11 +1086,14 @@ function construireFiche() {
   /* --- Corps : tout le reste, dans la même carte --- */
   const corps = document.createElement("div");
   corps.className = "fiche-corps";
+  const aDuContenu = p.resume || p.cle || (p.chrono && p.chrono.length) || (p.sections && p.sections.length);
 
-  const res = document.createElement("p");
-  res.className = "resume";
-  res.textContent = p.resume;
-  corps.appendChild(res);
+  if (p.resume) {
+    const res = document.createElement("p");
+    res.className = "resume";
+    res.textContent = p.resume;
+    corps.appendChild(res);
+  }
 
   if (p.cle) {
     const c = document.createElement("p");
@@ -893,73 +1106,32 @@ function construireFiche() {
 
   if (p.chrono && p.chrono.length) {
     corps.appendChild(titre("Chronologie"));
-    const liste = document.createElement("ul");
-    liste.className = "chrono";
-    p.chrono.forEach(([date, fait]) => {
-      const li = document.createElement("li");
-      const texte = document.createElement("p");
-      const dt = document.createElement("span");
-      dt.className = "date";
-      dt.textContent = date;
-      texte.append(dt, " — " + fait);
-      li.appendChild(texte);
-      liste.appendChild(li);
-    });
-    corps.appendChild(liste);
+    corps.appendChild(construireChrono(p.chrono));
+    const pied = construirePied(p.gens, p.evenements);
+    if (pied) corps.appendChild(pied);
   }
 
-  /* --- Personnalités / événements, côte à côte --- */
-  if ((p.gens && p.gens.length) || (p.evenements && p.evenements.length)) {
-    const pied = document.createElement("div");
-    pied.className = "pied";
+  /* --- Fiches à sections multiples (une même période racontée en
+     plusieurs temps, chacun avec sa propre chronologie) --- */
+  if (p.sections && p.sections.length) {
+    p.sections.forEach(sec => {
+      corps.appendChild(titre(sec.titre));
+      if (sec.chrono && sec.chrono.length) corps.appendChild(construireChrono(sec.chrono));
+      const pied = construirePied(sec.gens, sec.evenements);
+      if (pied) corps.appendChild(pied);
+    });
+  }
 
-    if (p.gens && p.gens.length) {
-      const colGens = document.createElement("div");
-      colGens.appendChild(titre("Personnalités"));
-      const g = document.createElement("ul");
-      g.className = "gens";
-      p.gens.forEach(personne => {
-        const { nom: n, role } = typeof personne === "string" ? { nom: personne, role: null } : { nom: personne.n, role: personne.r };
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.textContent = n;
-        a.href = lienWikipedia(n);
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        li.appendChild(a);
-        if (role) {
-          li.append(" ");
-          const r = document.createElement("span");
-          r.className = "role";
-          r.textContent = "— " + role;
-          li.appendChild(r);
-        }
-        g.appendChild(li);
-      });
-      colGens.appendChild(g);
-      pied.appendChild(colGens);
-    }
+  if (!p.chrono && !(p.sections && p.sections.length)) {
+    const pied = construirePied(p.gens, p.evenements);
+    if (pied) corps.appendChild(pied);
+  }
 
-    if (p.evenements && p.evenements.length) {
-      const colEven = document.createElement("div");
-      colEven.appendChild(titre("Événements"));
-      const ev = document.createElement("ul");
-      ev.className = "gens";
-      p.evenements.forEach(nom => {
-        const li = document.createElement("li");
-        const a = document.createElement("a");
-        a.textContent = nom;
-        a.href = lienWikipedia(nom);
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        li.appendChild(a);
-        ev.appendChild(li);
-      });
-      colEven.appendChild(ev);
-      pied.appendChild(colEven);
-    }
-
-    corps.appendChild(pied);
+  if (!aDuContenu) {
+    const vide = document.createElement("p");
+    vide.className = "vide";
+    vide.textContent = "Fiche pas encore rédigée.";
+    corps.appendChild(vide);
   }
 
   if (p.fin_texte && p.fin_texte !== "—") {
