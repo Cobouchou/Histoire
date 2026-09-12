@@ -678,11 +678,15 @@ const TYPES = {
 </div>
 
 <script>
-const DEBUT = -500, FIN = 2026;
-// Entre les guerres médiques et la Révolution s'étendent 2254 ans que la
-// frise ne représente pas à l'échelle : cette coupure les compresse à une
-// largeur fixe, comme un axe brisé sur un graphique.
-const COUPURE = { debut: -465, fin: 1789, largeur: 40 };
+const DEBUT = -1250, FIN = 2026;
+// De grands vides séparent les périodes anciennes entre elles, puis de
+// l'époque moderne ; la frise ne les représente pas à l'échelle et les
+// compresse chacun à une largeur fixe, comme un axe brisé sur un graphique.
+// Triées par ordre chronologique croissant — l'ordre compte pour le calcul.
+const COUPURES = [
+  { debut: -1180, fin: -500, largeur: 34 },
+  { debut: -465, fin: 1789, largeur: 40 }
+];
 
 let selection = PERIODES[0].id;
 
@@ -722,19 +726,29 @@ function intervalleGraduation() {
 }
 
 /* Convertit une année (astronomique, négative avant J.-C.) en position x,
-   en comptant la coupure comme une largeur fixe plutôt que réelle. */
+   en comptant chaque coupure comme une largeur fixe plutôt que réelle. */
 function anneeVersX(an) {
-  const avant = (COUPURE.debut - DEBUT) * PX_PAR_AN;
-  if (an <= COUPURE.debut) return (an - DEBUT) * PX_PAR_AN;
-  if (an < COUPURE.fin) return avant + COUPURE.largeur * (an - COUPURE.debut) / (COUPURE.fin - COUPURE.debut);
-  return avant + COUPURE.largeur + (an - COUPURE.fin) * PX_PAR_AN;
+  let x = 0, curseur = DEBUT;
+  for (const c of COUPURES) {
+    if (an <= c.debut) return x + (an - curseur) * PX_PAR_AN;
+    x += (c.debut - curseur) * PX_PAR_AN;
+    if (an < c.fin) return x + c.largeur * (an - c.debut) / (c.fin - c.debut);
+    x += c.largeur;
+    curseur = c.fin;
+  }
+  return x + (an - curseur) * PX_PAR_AN;
 }
 /* Fonction inverse, utilisée pour ancrer le zoom sous le doigt/curseur. */
 function xVersAnnee(x) {
-  const avant = (COUPURE.debut - DEBUT) * PX_PAR_AN;
-  if (x <= avant) return DEBUT + x / PX_PAR_AN;
-  if (x < avant + COUPURE.largeur) return (x - avant) < COUPURE.largeur / 2 ? COUPURE.debut : COUPURE.fin;
-  return COUPURE.fin + (x - avant - COUPURE.largeur) / PX_PAR_AN;
+  let xAcc = 0, curseur = DEBUT;
+  for (const c of COUPURES) {
+    const avant = xAcc + (c.debut - curseur) * PX_PAR_AN;
+    if (x <= avant) return curseur + (x - xAcc) / PX_PAR_AN;
+    if (x < avant + c.largeur) return (x - avant) < c.largeur / 2 ? c.debut : c.fin;
+    xAcc = avant + c.largeur;
+    curseur = c.fin;
+  }
+  return curseur + (x - xAcc) / PX_PAR_AN;
 }
 
 /* La frise empile plusieurs lignes indépendantes (une par grande catégorie),
@@ -775,7 +789,6 @@ function construireSegment(p, largeur, hauteur) {
 
 function ajouterEspace(conteneur, x0, x1) {
   if (x1 <= x0) return;
-  const coupureX0 = anneeVersX(COUPURE.debut), coupureX1 = coupureX0 + COUPURE.largeur;
   const ajouterSpacer = (largeur) => {
     if (largeur <= 0) return;
     const s = document.createElement("div");
@@ -783,22 +796,25 @@ function ajouterEspace(conteneur, x0, x1) {
     s.style.width = largeur + "px";
     conteneur.appendChild(s);
   };
-  if (x0 <= coupureX0 && x1 >= coupureX1) {
-    ajouterSpacer(coupureX0 - x0);
-    const c = document.createElement("div");
-    c.className = "coupure";
-    c.style.width = COUPURE.largeur + "px";
-    c.title = (COUPURE.fin - COUPURE.debut) + " ans non représentés à l'échelle";
-    conteneur.appendChild(c);
-    ajouterSpacer(x1 - coupureX1);
-  } else {
-    ajouterSpacer(x1 - x0);
-  }
+  let curseur = x0;
+  COUPURES.forEach(coupure => {
+    const cx0 = anneeVersX(coupure.debut), cx1 = cx0 + coupure.largeur;
+    if (cx0 >= curseur && cx1 <= x1) {
+      ajouterSpacer(cx0 - curseur);
+      const h = document.createElement("div");
+      h.className = "coupure";
+      h.style.width = coupure.largeur + "px";
+      h.title = (coupure.fin - coupure.debut) + " ans non représentés à l'échelle";
+      conteneur.appendChild(h);
+      curseur = cx1;
+    }
+  });
+  ajouterSpacer(x1 - curseur);
 }
 
 function construireFrise() {
   document.getElementById("soustitre").textContent =
-    PERIODES.length + " périodes sur " + LIGNES.length + " lignes — " + LIGNES.map(l => l.etiquette.toLowerCase()).join(", ") + " — de l'Antiquité à aujourd'hui. Chaque barre est proportionnelle à sa durée ; le vide entre l'Antiquité et 1789 est volontairement compressé.";
+    PERIODES.length + " périodes sur " + LIGNES.length + " lignes — " + LIGNES.map(l => l.etiquette.toLowerCase()).join(", ") + " — de l'Antiquité à aujourd'hui. Chaque barre est proportionnelle à sa durée ; les grands vides entre les périodes anciennes et jusqu'à 1789 sont volontairement compressés.";
 
   const largeurTotale = anneeVersX(FIN);
 
@@ -832,17 +848,22 @@ function construireFrise() {
   r.innerHTML = "";
   r.style.width = largeurTotale + "px";
 
-  // Antiquité : un seul segment, ses deux bornes suffisent comme repères
-  [DEBUT, COUPURE.debut].forEach(an => {
-    const s = document.createElement("span");
-    s.textContent = Math.abs(an) + " av. J.-C.";
-    s.style.left = anneeVersX(an) + "px";
-    r.appendChild(s);
+  // Périodes anciennes : chacune est trop courte pour une graduation
+  // régulière, ses deux bornes suffisent comme repères.
+  let curseurRegle = DEBUT;
+  COUPURES.forEach(c => {
+    [curseurRegle, c.debut].forEach(an => {
+      const s = document.createElement("span");
+      s.textContent = Math.abs(an) + " av. J.-C.";
+      s.style.left = anneeVersX(an) + "px";
+      r.appendChild(s);
+    });
+    curseurRegle = c.fin;
   });
 
   // Époque moderne : graduation régulière, pas adapté au niveau de zoom
   const intervalle = intervalleGraduation();
-  const premier = Math.ceil(COUPURE.fin / intervalle) * intervalle;
+  const premier = Math.ceil(curseurRegle / intervalle) * intervalle;
   for (let an = premier; an < FIN; an += intervalle) {
     const s = document.createElement("span");
     s.textContent = an;
