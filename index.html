@@ -579,9 +579,12 @@ const TYPES = {
   /* ---------- Détail ---------- */
   .fiche {
     background: var(--card); border: 1px solid var(--line);
-    border-radius: 12px; overflow: hidden;
+    border-radius: 12px;
   }
-  .fiche-entete { background: var(--accent); padding: 18px 26px 16px; }
+  .fiche-entete {
+    background: var(--accent); padding: 15px 20px 13px;
+    margin: 26px 26px 0; border-radius: 8px;
+  }
   .entete-titre {
     margin: 0; font-size: 19px; font-weight: 700; color: #fff;
     letter-spacing: -.005em; line-height: 1.3;
@@ -598,9 +601,9 @@ const TYPES = {
   h3 {
     font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
     color: var(--accent); background: var(--accent-fond);
-    margin: 26px 0 16px; padding: 9px 16px; border-radius: 8px;
+    margin: 26px 0 16px; padding: 7px 14px; border-radius: 8px;
   }
-  .chrono { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+  .chrono { list-style: none; margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 12px; }
   .chrono li { display: flex; gap: 12px; }
   .chrono li::before {
     content: ""; flex: none; width: 6px; height: 6px; margin-top: 8px;
@@ -622,7 +625,7 @@ const TYPES = {
   }
   .lien-inline { color: var(--accent); }
   .vide { color: var(--ink-3); font-style: italic; margin: 0; }
-  .gens { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .gens { list-style: none; margin: 0; padding: 0 0 0 18px; display: flex; flex-direction: column; gap: 9px; }
   .gens li { font-size: 14px; line-height: 1.4; }
   .gens a {
     color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent;
@@ -631,14 +634,14 @@ const TYPES = {
   .gens a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
   .gens .role { color: var(--ink-3); font-size: 13px; }
   .pied { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 26px; }
-  .fin-texte { margin: 0; max-width: 62ch; }
+  .fin-texte { margin: 0; padding-left: 18px; max-width: 62ch; }
 
   @media (max-width: 860px) {
     .wrap { padding: 28px 16px 60px; }
     .grille { grid-template-columns: 1fr; gap: 20px; }
     .liste { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 6px; }
     .item { flex: none; width: 190px; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
-    .fiche-entete { padding: 16px 18px 14px; }
+    .fiche-entete { padding: 16px 18px 14px; margin: 18px 18px 0; }
     .fiche-corps { padding: 18px 18px 20px; }
     .entete-titre { font-size: 17px; }
     .frise-etiquettes { width: 40px; }
