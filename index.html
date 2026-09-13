@@ -613,13 +613,13 @@ const TYPES = {
   .sous-chrono {
     list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px;
   }
-  .sous-chrono li {
-    font-size: 13.5px; line-height: 1.55; color: var(--ink-2); max-width: 60ch;
-    padding-left: 16px; position: relative;
-  }
+  .sous-chrono li { display: flex; gap: 10px; }
   .sous-chrono li::before {
-    content: ""; position: absolute; left: 0; top: 7px;
-    width: 5px; height: 5px; border-radius: 50%; border: 1.5px solid var(--ink-3);
+    content: ""; flex: none; width: 5px; height: 5px; margin-top: 7px;
+    border-radius: 50%; border: 1.5px solid var(--ink-3);
+  }
+  .sous-chrono li > span {
+    font-size: 13.5px; line-height: 1.55; color: var(--ink-2); max-width: 60ch;
   }
   .lien-inline { color: var(--accent); }
   .vide { color: var(--ink-3); font-style: italic; margin: 0; }
@@ -1013,7 +1013,9 @@ function construireChrono(entrees) {
       sousListe.className = "sous-chrono";
       sous.forEach(ligneTexte => {
         const sousLi = document.createElement("li");
-        rendreTexteRiche(sousLi, ligneTexte);
+        const texteSpan = document.createElement("span");
+        rendreTexteRiche(texteSpan, ligneTexte);
+        sousLi.appendChild(texteSpan);
         sousListe.appendChild(sousLi);
       });
       corpsLi.appendChild(sousListe);
