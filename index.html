@@ -481,7 +481,6 @@ const TYPES = {
     font-size: 21px; font-weight: 600; margin: 0 0 4px;
     letter-spacing: -0.01em;
   }
-  .soustitre { color: var(--ink-2); font-size: 14px; margin: 0; }
 
   /* ---------- Frise ---------- */
   .frise-toolbar { display: flex; justify-content: flex-end; gap: 4px; margin: 28px 0 6px; }
@@ -655,7 +654,6 @@ const TYPES = {
 <div class="wrap">
   <header>
     <h1>Histoire</h1>
-    <p class="soustitre" id="soustitre"></p>
     <div class="frise-toolbar">
       <button type="button" class="zoom-btn" id="zoomMoins" aria-label="Réduire la frise">−</button>
       <button type="button" class="zoom-btn" id="zoomPlus" aria-label="Agrandir la frise">+</button>
@@ -813,8 +811,6 @@ function ajouterEspace(conteneur, x0, x1) {
 }
 
 function construireFrise() {
-  document.getElementById("soustitre").textContent =
-    PERIODES.length + " périodes sur " + LIGNES.length + " lignes — " + LIGNES.map(l => l.etiquette.toLowerCase()).join(", ") + " — de l'Antiquité à aujourd'hui. Chaque barre est proportionnelle à sa durée ; les grands vides entre les périodes anciennes et jusqu'à 1789 sont volontairement compressés.";
 
   const largeurTotale = anneeVersX(FIN);
 
