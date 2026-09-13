@@ -598,7 +598,7 @@ const TYPES = {
   h3 {
     font-size: 12px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
     color: var(--accent); background: var(--accent-fond);
-    margin: 26px -26px 16px; padding: 9px 26px;
+    margin: 26px 0 16px; padding: 9px 16px; border-radius: 8px;
   }
   .chrono { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
   .chrono li { display: flex; gap: 12px; }
@@ -631,7 +631,6 @@ const TYPES = {
   .gens a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
   .gens .role { color: var(--ink-3); font-size: 13px; }
   .pied { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 26px; }
-  .pied h3 { margin: 26px 0 16px; }
   .fin-texte { margin: 0; max-width: 62ch; }
 
   @media (max-width: 860px) {
@@ -641,7 +640,6 @@ const TYPES = {
     .item { flex: none; width: 190px; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
     .fiche-entete { padding: 16px 18px 14px; }
     .fiche-corps { padding: 18px 18px 20px; }
-    h3 { margin-left: -18px; margin-right: -18px; padding-left: 18px; padding-right: 18px; }
     .entete-titre { font-size: 17px; }
     .frise-etiquettes { width: 40px; }
     .frise-etiquette-ligne { font-size: 9px; }
