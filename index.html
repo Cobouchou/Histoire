@@ -548,7 +548,6 @@ const TYPES = {
     padding: 0; background: transparent !important; border-radius: 0;
     font-size: 10px; font-weight: 600; white-space: nowrap;
   }
-  .seg-etiquette-trait { position: absolute; width: 2px; height: 6px; pointer-events: none; }
   .coupure-groupe {
     position: absolute; top: 0; bottom: 0; cursor: help;
     background: repeating-linear-gradient(135deg, var(--card) 0 4px, var(--line) 4px 8px);
@@ -795,9 +794,9 @@ function empilerVoies(items) {
    jusqu'au début du suivant, quelle que soit sa date de fin réelle — utilisé
    pour les grandes périodes, qui se succèdent sans discontinuité. Le nom
    s'affiche à l'intérieur du segment quand il y tient ; sinon il est
-   déplacé au-dessus de la bande, avec un petit trait pour le relier à son
-   segment, et empilé au besoin comme les autres voies s'il y en a plusieurs
-   à la suite trop étroits pour leur texte. */
+   déplacé au-dessus de la bande, aligné sur le début de son segment, et
+   empilé au besoin comme les autres voies s'il y en a plusieurs à la suite
+   trop étroits pour leur texte. */
 function construireBandeContinue(groupe, items) {
   if (items.length === 0) { groupe.style.height = HAUTEUR_VOIE + "px"; return; }
 
@@ -846,14 +845,9 @@ function construireBandeContinue(groupe, items) {
     lab.dataset.id = s.p.id;
     lab.onclick = () => choisir(s.p.id);
     groupe.appendChild(lab);
-    const centre = (s.x0 + s.x1) / 2;
-    return { s, lab, centre };
+    return { s, lab, x0: s.x0 };
   });
-  etiquettes.forEach(e => {
-    const largeur = e.lab.getBoundingClientRect().width;
-    e.x0 = e.centre - largeur / 2;
-    e.x1 = e.centre + largeur / 2 + 6;
-  });
+  etiquettes.forEach(e => { e.x1 = e.x0 + e.lab.getBoundingClientRect().width + 10; });
   const nbVoiesHaut = empilerVoies(etiquettes);
 
   const hauteurBande = HAUTEUR_VOIE;
@@ -862,12 +856,6 @@ function construireBandeContinue(groupe, items) {
   etiquettes.forEach(e => {
     e.lab.style.left = e.x0 + "px";
     e.lab.style.top = ((nbVoiesHaut - 1 - e.voie) * HAUTEUR_ETIQUETTE_HAUT) + "px";
-    const trait = document.createElement("div");
-    trait.className = "seg-etiquette-trait";
-    trait.style.left = (e.centre - 1) + "px";
-    trait.style.top = (hauteurGroupe - hauteurBande - 6) + "px";
-    trait.style.background = TYPES[e.s.p.type].couleur;
-    groupe.appendChild(trait);
   });
 
   groupe.style.height = hauteurGroupe + "px";
