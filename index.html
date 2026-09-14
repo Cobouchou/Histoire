@@ -445,14 +445,17 @@ const PERIODES = [
 ];
 PERIODES.sort((a, b) => a.debut - b.debut);
 
+/* couleur : texte et traits. fond : fond très pâle des titres de fiche.
+   vif : fond plus saturé des barres de la frise, pour rester visible sur
+   fond blanc (fond est trop pâle pour ça). */
 const TYPES = {
-  monarchie:  { label: "Monarchie",  couleur: "#2F4B7C", fond: "#EAEEF5" },
-  republique: { label: "République", couleur: "#A33A38", fond: "#F7EBEA" },
-  empire:     { label: "Empire",     couleur: "#8A6A2F", fond: "#F5EFE2" },
-  transition: { label: "Transition", couleur: "#6E6E6E", fond: "#EFEEEC" },
-  antiquite:  { label: "Antiquité",  couleur: "#B5562E", fond: "#F6EAE2" },
-  guerre:     { label: "Conflit",    couleur: "#5B6B45", fond: "#EEF0E8" },
-  bataille:   { label: "Bataille",   couleur: "#5C6670", fond: "#EEF0F1" }
+  monarchie:  { label: "Monarchie",  couleur: "#2F4B7C", fond: "#EAEEF5", vif: "#C6D3EA" },
+  republique: { label: "République", couleur: "#A33A38", fond: "#F7EBEA", vif: "#F0C7C5" },
+  empire:     { label: "Empire",     couleur: "#8A6A2F", fond: "#F5EFE2", vif: "#EAD6A6" },
+  transition: { label: "Transition", couleur: "#6E6E6E", fond: "#EFEEEC", vif: "#D8D7D4" },
+  antiquite:  { label: "Antiquité",  couleur: "#B5562E", fond: "#F6EAE2", vif: "#F0CDB2" },
+  guerre:     { label: "Conflit",    couleur: "#5B6B45", fond: "#EEF0E8", vif: "#D3DCC0" },
+  bataille:   { label: "Bataille",   couleur: "#5C6670", fond: "#EEF0F1", vif: "#CDD5D9" }
 };
 </script>
 
@@ -534,6 +537,8 @@ const TYPES = {
     border: 2px solid var(--ink); border-radius: 4px;
   }
   .seg-libre-nom { font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+  .seg-trait { padding: 0; background: transparent !important; gap: 6px; }
+  .seg-trait-ligne { flex: none; width: 3px; height: 16px; border-radius: 2px; }
   .coupure-groupe {
     position: absolute; top: 0; bottom: 0; cursor: help;
     background: repeating-linear-gradient(135deg, var(--card) 0 4px, var(--line) 4px 8px);
@@ -732,15 +737,24 @@ const LIGNES = [
 /* Barre dont la partie colorée représente fidèlement les dates (avec une
    largeur minimum pour rester visible même sur un seul jour), mais dont le
    nom, toujours affiché pour rester lisible, peut déborder au-delà —
-   utilisée pour les conflits et les événements. */
-function construireBarreLibre(p, largeurBarre) {
+   utilisée pour les conflits et les événements. Un événement ponctuel (un
+   seul jour) se dessine comme un simple trait fin plutôt qu'un pavé, pour
+   ne pas paraître plus large qu'il ne l'est. */
+function construireBarreLibre(p, largeurBarre, ponctuel) {
   const b = document.createElement("button");
-  b.className = "seg seg-libre";
-  b.style.width = largeurBarre + "px";
-  b.style.background = TYPES[p.type].fond;
+  b.className = "seg seg-libre" + (ponctuel ? " seg-trait" : "");
   b.title = p.dates + " — " + p.nom;
   b.setAttribute("aria-label", p.nom + ", " + p.dates);
   b.dataset.id = p.id;
+  if (ponctuel) {
+    const ligne = document.createElement("span");
+    ligne.className = "seg-trait-ligne";
+    ligne.style.background = TYPES[p.type].couleur;
+    b.appendChild(ligne);
+  } else {
+    b.style.width = largeurBarre + "px";
+    b.style.background = TYPES[p.type].vif;
+  }
   const nom = document.createElement("span");
   nom.className = "seg-libre-nom";
   nom.style.color = TYPES[p.type].couleur;
@@ -800,19 +814,22 @@ function construireFrise() {
 
     const elements = items.map(p => {
       const x0 = anneeVersX(p.debut);
-      const largeurBarre = Math.max(anneeVersX(p.fin) - x0, 8);
-      const el = construireBarreLibre(p, largeurBarre);
+      const ponctuel = p.fin === p.debut;
+      const largeurBarre = ponctuel ? 0 : Math.max(anneeVersX(p.fin) - x0, 8);
+      const el = construireBarreLibre(p, largeurBarre, ponctuel);
       el.style.left = x0 + "px";
       groupe.appendChild(el);
       return { el, x0, largeurBarre };
     });
-    // La voie tient compte du texte, pas seulement de la barre : le nom
-    // reste toujours affiché et peut déborder au-delà d'une barre étroite
-    // (mesuré sur le span du nom, pas sur le bouton, puisque ce dernier
-    // ne s'élargit pas pour suivre le débordement).
+    // La voie tient compte de l'espace réellement occupé à l'écran (barre +
+    // nom, qui peut déborder au-delà d'une barre étroite), mesuré sur les
+    // éléments eux-mêmes plutôt qu'estimé, pour rester juste quelle que soit
+    // la présentation (pavé ou simple trait).
     elements.forEach(e => {
-      const largeurNom = e.el.querySelector(".seg-libre-nom").getBoundingClientRect().width;
-      e.x1 = e.x0 + Math.max(e.largeurBarre, largeurNom + 16);
+      const rectBouton = e.el.getBoundingClientRect();
+      const rectNom = e.el.querySelector(".seg-libre-nom").getBoundingClientRect();
+      const finTexte = rectNom.right - rectBouton.left;
+      e.x1 = e.x0 + Math.max(e.largeurBarre, finTexte + 4);
     });
     const nbVoies = empilerVoies(elements);
     elements.forEach(e => { e.el.style.top = (e.voie * HAUTEUR_VOIE) + "px"; });
