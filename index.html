@@ -557,24 +557,8 @@ const TYPES = {
 
   /* ---------- Grille ---------- */
   .grille {
-    display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: start;
     margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line);
   }
-
-  .liste { display: flex; flex-direction: column; gap: 1px; }
-  .item {
-    font: inherit; text-align: left; cursor: pointer;
-    background: transparent; border: 0; border-radius: 8px;
-    padding: 11px 12px; display: grid; gap: 3px;
-    border-left: 3px solid transparent;
-  }
-  .item:hover { background: #F1EFEA; }
-  .item:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
-  .item[aria-pressed="true"] { background: var(--card); box-shadow: 0 0 0 1px var(--line); }
-  .item-haut { display: flex; align-items: baseline; gap: 8px; }
-  .item-annees { font-size: 12px; color: var(--ink-3); }
-  .item-nom { font-size: 14px; font-weight: 500; line-height: 1.35; }
-  .item-barre { height: 4px; border-radius: 2px; margin-top: 4px; }
 
   /* ---------- Détail ---------- */
   .fiche {
@@ -638,9 +622,6 @@ const TYPES = {
 
   @media (max-width: 860px) {
     .wrap { padding: 28px 16px 60px; }
-    .grille { grid-template-columns: 1fr; gap: 20px; }
-    .liste { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 6px; }
-    .item { flex: none; width: 190px; border-radius: 8px; box-shadow: 0 0 0 1px var(--line); }
     .fiche-entete { padding: 16px 18px 14px; margin: 18px 18px 0; }
     .fiche-corps { padding: 18px 18px 20px; }
     .entete-titre { font-size: 17px; }
@@ -671,7 +652,6 @@ const TYPES = {
   </header>
 
   <div class="grille">
-    <div class="liste" id="liste"></div>
     <div id="fiche"></div>
   </div>
 </div>
@@ -688,9 +668,6 @@ const COUPURES = [
 ];
 
 let selection = PERIODES[0].id;
-
-/* ---------- Utilitaires ---------- */
-const duree = p => Math.max(p.fin - p.debut, 0.3);
 
 /* Quelques noms de la frise pointent, en toute logique, vers un article
    Wikipédia différent du nom affiché (le nom d'un titre porté avant un
@@ -926,39 +903,6 @@ function initialiserZoomFrise() {
   document.getElementById("zoomPlus").onclick = () => zoomBouton(1.35);
 }
 
-/* ---------- Liste ---------- */
-function construireListe() {
-  const l = document.getElementById("liste");
-  l.innerHTML = "";
-  const maxDuree = Math.max(...PERIODES.map(duree));
-  PERIODES.forEach(p => {
-    const b = document.createElement("button");
-    b.className = "item";
-    b.setAttribute("aria-pressed", selection === p.id);
-    b.style.borderLeftColor = selection === p.id ? TYPES[p.type].couleur : "transparent";
-    b.onclick = () => choisir(p.id);
-
-    const haut = document.createElement("div");
-    haut.className = "item-haut";
-    const an = document.createElement("span");
-    an.className = "item-annees";
-    an.textContent = p.dates;
-    haut.appendChild(an);
-
-    const nom = document.createElement("div");
-    nom.className = "item-nom";
-    nom.textContent = p.nom;
-
-    const barre = document.createElement("div");
-    barre.className = "item-barre";
-    barre.style.background = TYPES[p.type].couleur;
-    barre.style.width = Math.max(duree(p) / maxDuree * 100, 2) + "%";
-
-    b.append(haut, nom, barre);
-    l.appendChild(b);
-  });
-}
-
 /* ---------- Fiche ---------- */
 /* Un fragment de texte peut contenir **gras** et [libellé](url) : on les
    convertit en vrais nœuds plutôt que d'utiliser innerHTML. */
@@ -1185,7 +1129,6 @@ function appliquerEtatFrise() {
   });
 }
 function rendre() {
-  construireListe();
   construireFiche();
   appliquerEtatFrise();
 }
