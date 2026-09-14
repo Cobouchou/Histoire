@@ -506,7 +506,7 @@ const TYPES = {
   }
   .frise-etiquette-ligne {
     display: flex; align-items: center;
-    font-size: 10.5px; font-weight: 600; color: var(--ink-3);
+    font-size: 9.5px; font-weight: 600; color: var(--ink-3);
     text-transform: uppercase; letter-spacing: .04em; line-height: 1.2;
   }
   .frise-scroll {
@@ -536,16 +536,26 @@ const TYPES = {
     content: ""; position: absolute; inset: 0;
     border: 2px solid var(--ink); border-radius: 4px;
   }
-  .seg-libre-nom { font-size: 11.5px; font-weight: 600; white-space: nowrap; }
+  .seg-libre-nom { font-size: 10px; font-weight: 600; white-space: nowrap; }
   .seg-trait { padding: 0; background: transparent !important; gap: 6px; }
   .seg-trait-ligne { flex: none; width: 3px; height: 16px; border-radius: 2px; }
+  .seg-bande { border-radius: 0; justify-content: center; }
+  .seg-bande-nom {
+    color: #fff; font-size: 10px; font-weight: 600;
+    white-space: nowrap; text-shadow: 0 1px 2px rgba(0,0,0,.25);
+  }
+  .seg.seg-etiquette-haut {
+    padding: 0; background: transparent !important; border-radius: 0;
+    font-size: 10px; font-weight: 600; white-space: nowrap;
+  }
+  .seg-etiquette-trait { position: absolute; width: 2px; height: 6px; pointer-events: none; }
   .coupure-groupe {
     position: absolute; top: 0; bottom: 0; cursor: help;
     background: repeating-linear-gradient(135deg, var(--card) 0 4px, var(--line) 4px 8px);
   }
   .regle { position: relative; height: 22px; margin-top: 6px; width: max-content; min-width: 100%; }
   .regle span {
-    position: absolute; top: 0; font-size: 12px; color: var(--ink-3);
+    position: absolute; top: 0; font-size: 11px; color: var(--ink-3);
     transform: translateX(-50%); white-space: nowrap;
   }
 
@@ -620,7 +630,7 @@ const TYPES = {
     .fiche-corps { padding: 18px 18px 20px; }
     .entete-titre { font-size: 17px; }
     .frise-etiquettes { width: 40px; }
-    .frise-etiquette-ligne { font-size: 9px; }
+    .frise-etiquette-ligne { font-size: 8.5px; }
   }
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; animation: none !important; }
@@ -728,8 +738,9 @@ function xVersAnnee(x) {
    automatiquement décalé sur une voie supplémentaire en dessous, comme un
    diagramme de Gantt, plutôt que de se superposer au premier. */
 const HAUTEUR_VOIE = 40;
+const HAUTEUR_ETIQUETTE_HAUT = 20;
 const LIGNES = [
-  { id: "regimes", etiquette: "Grandes périodes" },
+  { id: "regimes", etiquette: "Grandes périodes", continu: true },
   { id: "conflits", etiquette: "Conflits" },
   { id: "batailles", etiquette: "Événements" }
 ];
@@ -780,6 +791,88 @@ function empilerVoies(items) {
   return finVoies.length;
 }
 
+/* Bande continue (sans espace ni chevauchement) : chaque segment s'étend
+   jusqu'au début du suivant, quelle que soit sa date de fin réelle — utilisé
+   pour les grandes périodes, qui se succèdent sans discontinuité. Le nom
+   s'affiche à l'intérieur du segment quand il y tient ; sinon il est
+   déplacé au-dessus de la bande, avec un petit trait pour le relier à son
+   segment, et empilé au besoin comme les autres voies s'il y en a plusieurs
+   à la suite trop étroits pour leur texte. */
+function construireBandeContinue(groupe, items) {
+  if (items.length === 0) { groupe.style.height = HAUTEUR_VOIE + "px"; return; }
+
+  const tries = [...items].sort((a, b) => a.debut - b.debut);
+  const bornes = tries.map(p => anneeVersX(p.debut));
+  bornes.push(anneeVersX(tries[tries.length - 1].fin));
+
+  const segments = tries.map((p, i) => {
+    const x0 = bornes[i], x1 = Math.max(bornes[i + 1], x0 + 1);
+    const seg = document.createElement("button");
+    seg.className = "seg seg-bande";
+    seg.style.left = x0 + "px";
+    seg.style.width = (x1 - x0) + "px";
+    seg.style.height = HAUTEUR_VOIE + "px";
+    seg.style.background = TYPES[p.type].vif;
+    seg.title = p.dates + " — " + p.nom;
+    seg.setAttribute("aria-label", p.nom + ", " + p.dates);
+    seg.dataset.id = p.id;
+    seg.onclick = () => choisir(p.id);
+    const nom = document.createElement("span");
+    nom.className = "seg-bande-nom";
+    nom.textContent = p.nom;
+    seg.appendChild(nom);
+    groupe.appendChild(seg);
+    return { p, x0, x1, seg, nom };
+  });
+
+  // Le nom reste dans le segment s'il y tient (avec une petite marge) ;
+  // sinon il en sort pour rejoindre les étiquettes du dessus.
+  const debordants = [];
+  segments.forEach(s => {
+    const dispo = s.x1 - s.x0 - 12;
+    if (s.nom.getBoundingClientRect().width > dispo) {
+      s.nom.remove();
+      debordants.push(s);
+    }
+  });
+
+  const etiquettes = debordants.map(s => {
+    const lab = document.createElement("button");
+    lab.className = "seg seg-etiquette-haut";
+    lab.textContent = s.p.nom;
+    lab.style.color = TYPES[s.p.type].couleur;
+    lab.title = s.p.dates + " — " + s.p.nom;
+    lab.setAttribute("aria-label", s.p.nom + ", " + s.p.dates);
+    lab.dataset.id = s.p.id;
+    lab.onclick = () => choisir(s.p.id);
+    groupe.appendChild(lab);
+    const centre = (s.x0 + s.x1) / 2;
+    return { s, lab, centre };
+  });
+  etiquettes.forEach(e => {
+    const largeur = e.lab.getBoundingClientRect().width;
+    e.x0 = e.centre - largeur / 2;
+    e.x1 = e.centre + largeur / 2 + 6;
+  });
+  const nbVoiesHaut = empilerVoies(etiquettes);
+
+  const hauteurBande = HAUTEUR_VOIE;
+  const hauteurGroupe = nbVoiesHaut * HAUTEUR_ETIQUETTE_HAUT + hauteurBande;
+  segments.forEach(s => { s.seg.style.top = (hauteurGroupe - hauteurBande) + "px"; });
+  etiquettes.forEach(e => {
+    e.lab.style.left = e.x0 + "px";
+    e.lab.style.top = ((nbVoiesHaut - 1 - e.voie) * HAUTEUR_ETIQUETTE_HAUT) + "px";
+    const trait = document.createElement("div");
+    trait.className = "seg-etiquette-trait";
+    trait.style.left = (e.centre - 1) + "px";
+    trait.style.top = (hauteurGroupe - hauteurBande - 6) + "px";
+    trait.style.background = TYPES[e.s.p.type].couleur;
+    groupe.appendChild(trait);
+  });
+
+  groupe.style.height = hauteurGroupe + "px";
+}
+
 function ajouterCoupures(groupe) {
   COUPURES.forEach(coupure => {
     const h = document.createElement("div");
@@ -812,34 +905,36 @@ function construireFrise() {
     lignesConteneur.appendChild(groupe);
     ajouterCoupures(groupe);
 
-    const elements = items.map(p => {
-      const x0 = anneeVersX(p.debut);
-      const ponctuel = p.fin === p.debut;
-      const largeurBarre = ponctuel ? 0 : Math.max(anneeVersX(p.fin) - x0, 8);
-      const el = construireBarreLibre(p, largeurBarre, ponctuel);
-      el.style.left = x0 + "px";
-      groupe.appendChild(el);
-      return { el, x0, largeurBarre };
-    });
-    // La voie tient compte de l'espace réellement occupé à l'écran (barre +
-    // nom, qui peut déborder au-delà d'une barre étroite), mesuré sur les
-    // éléments eux-mêmes plutôt qu'estimé, pour rester juste quelle que soit
-    // la présentation (pavé ou simple trait).
-    elements.forEach(e => {
-      const rectBouton = e.el.getBoundingClientRect();
-      const rectNom = e.el.querySelector(".seg-libre-nom").getBoundingClientRect();
-      const finTexte = rectNom.right - rectBouton.left;
-      e.x1 = e.x0 + Math.max(e.largeurBarre, finTexte + 4);
-    });
-    const nbVoies = empilerVoies(elements);
-    elements.forEach(e => { e.el.style.top = (e.voie * HAUTEUR_VOIE) + "px"; });
-
-    const hauteurGroupe = Math.max(nbVoies, 1) * HAUTEUR_VOIE;
-    groupe.style.height = hauteurGroupe + "px";
+    if (ligne.continu) {
+      construireBandeContinue(groupe, items);
+    } else {
+      const elements = items.map(p => {
+        const x0 = anneeVersX(p.debut);
+        const ponctuel = p.fin === p.debut;
+        const largeurBarre = ponctuel ? 0 : Math.max(anneeVersX(p.fin) - x0, 8);
+        const el = construireBarreLibre(p, largeurBarre, ponctuel);
+        el.style.left = x0 + "px";
+        groupe.appendChild(el);
+        return { el, x0, largeurBarre };
+      });
+      // La voie tient compte de l'espace réellement occupé à l'écran (barre +
+      // nom, qui peut déborder au-delà d'une barre étroite), mesuré sur les
+      // éléments eux-mêmes plutôt qu'estimé, pour rester juste quelle que soit
+      // la présentation (pavé ou simple trait).
+      elements.forEach(e => {
+        const rectBouton = e.el.getBoundingClientRect();
+        const rectNom = e.el.querySelector(".seg-libre-nom").getBoundingClientRect();
+        const finTexte = rectNom.right - rectBouton.left;
+        e.x1 = e.x0 + Math.max(e.largeurBarre, finTexte + 4);
+      });
+      const nbVoies = empilerVoies(elements);
+      elements.forEach(e => { e.el.style.top = (e.voie * HAUTEUR_VOIE) + "px"; });
+      groupe.style.height = (Math.max(nbVoies, 1) * HAUTEUR_VOIE) + "px";
+    }
 
     const lab = document.createElement("div");
     lab.className = "frise-etiquette-ligne";
-    lab.style.height = hauteurGroupe + "px";
+    lab.style.height = groupe.style.height;
     lab.textContent = ligne.etiquette;
     etq.appendChild(lab);
   });
