@@ -529,7 +529,7 @@ const TYPES = {
   }
   .seg:hover, .seg:focus-visible { opacity: .72; }
   .seg:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; z-index: 2; }
-  .seg:not(.seg-point)[aria-pressed="true"]::after {
+  .seg:not(.seg-libre)[aria-pressed="true"]::after {
     content: ""; position: absolute; inset: 0;
     border: 2px solid var(--ink); border-radius: 4px;
   }
@@ -547,14 +547,15 @@ const TYPES = {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 1px 2px rgba(0,0,0,.25);
   }
-  .seg-point {
-    padding: 0; background: transparent !important; gap: 6px; height: 16px;
+  .seg-libre {
+    padding: 0; background: transparent !important; gap: 6px; overflow: visible;
   }
-  .seg-point .pt-puce { flex: none; width: 7px; height: 7px; border-radius: 2px; }
-  .seg-point .pt-nom {
-    font-size: 11.5px; font-weight: 600; color: var(--ink); white-space: nowrap;
+  .seg-libre .seg-libre-barre { flex: none; height: 6px; border-radius: 3px; }
+  .seg-libre .seg-libre-nom {
+    font-size: 11.5px; font-weight: 600; white-space: nowrap;
+    text-shadow: 0 0 4px var(--bg), 0 0 4px var(--bg);
   }
-  .seg-point[aria-pressed="true"] .pt-nom { text-decoration: underline; }
+  .seg-libre[aria-pressed="true"] .seg-libre-nom { text-decoration: underline; }
   .coupure-groupe {
     position: absolute; top: 0; bottom: 0; cursor: help;
     background: repeating-linear-gradient(135deg, var(--card) 0 4px, var(--line) 4px 8px);
@@ -743,12 +744,16 @@ function xVersAnnee(x) {
    dès que deux éléments se chevauchent dans le temps, le second est
    automatiquement décalé sur une voie supplémentaire en dessous, comme un
    diagramme de Gantt, plutôt que de se superposer au premier. */
+const HAUTEUR_VOIE = 30;
 const LIGNES = [
-  { id: "regimes", etiquette: "Grandes périodes", forme: "barre", hauteurVoie: 52 },
-  { id: "conflits", etiquette: "Conflits", forme: "barre", hauteurVoie: 30 },
-  { id: "batailles", etiquette: "Événements", forme: "point", hauteurVoie: 22 }
+  { id: "regimes", etiquette: "Grandes périodes", forme: "confinee" },
+  { id: "conflits", etiquette: "Conflits", forme: "libre" },
+  { id: "batailles", etiquette: "Événements", forme: "libre" }
 ];
 
+/* Barre dont le texte reste confiné à l'intérieur (masqué si trop étroit) —
+   utilisée pour les grandes périodes, dont la durée est presque toujours
+   assez large pour contenir leur nom. */
 function construireSegment(p, largeur, hauteur) {
   const b = document.createElement("button");
   b.className = "seg";
@@ -776,19 +781,25 @@ function construireSegment(p, largeur, hauteur) {
   return b;
 }
 
-function construireEvenement(p) {
+/* Barre dont la partie colorée représente fidèlement les dates (avec une
+   largeur minimum pour rester visible même sur un seul jour), mais dont le
+   nom, toujours affiché pour rester lisible, peut déborder au-delà —
+   utilisée pour les conflits et les événements. */
+function construireBarreLibre(p, largeurBarre) {
   const b = document.createElement("button");
-  b.className = "seg seg-point";
+  b.className = "seg seg-libre";
   b.title = p.dates + " — " + p.nom;
   b.setAttribute("aria-label", p.nom + ", " + p.dates);
   b.dataset.id = p.id;
-  const puce = document.createElement("span");
-  puce.className = "pt-puce";
-  puce.style.background = TYPES[p.type].couleur;
+  const barre = document.createElement("span");
+  barre.className = "seg-libre-barre";
+  barre.style.width = largeurBarre + "px";
+  barre.style.background = TYPES[p.type].couleur;
   const nom = document.createElement("span");
-  nom.className = "pt-nom";
+  nom.className = "seg-libre-nom";
+  nom.style.color = TYPES[p.type].couleur;
   nom.textContent = p.nom;
-  b.append(puce, nom);
+  b.append(barre, nom);
   b.onclick = () => choisir(p.id);
   return b;
 }
@@ -835,19 +846,27 @@ function construireFrise() {
 
     const groupe = document.createElement("div");
     groupe.className = "frise-groupe";
+    // Attaché tout de suite : la mesure de la largeur du texte (ci-dessous,
+    // pour les barres "libres") a besoin que les éléments soient déjà dans
+    // le document pour renvoyer une largeur réelle et non nulle.
+    lignesConteneur.appendChild(groupe);
     ajouterCoupures(groupe);
 
     let nbVoies;
-    if (ligne.forme === "point") {
+    if (ligne.forme === "libre") {
       const elements = items.map(p => {
-        const el = construireEvenement(p);
-        el.style.left = anneeVersX(p.debut) + "px";
+        const x0 = anneeVersX(p.debut);
+        const largeurBarre = Math.max(anneeVersX(p.fin) - x0, 4);
+        const el = construireBarreLibre(p, largeurBarre);
+        el.style.left = x0 + "px";
         groupe.appendChild(el);
-        return { el, x0: anneeVersX(p.debut) };
+        return { el, x0 };
       });
-      elements.forEach(e => { e.x1 = e.x0 + e.el.getBoundingClientRect().width + 16; });
+      // La voie tient compte du texte, pas seulement des dates réelles,
+      // puisque le nom peut déborder au-delà de la barre colorée.
+      elements.forEach(e => { e.x1 = e.x0 + e.el.getBoundingClientRect().width + 14; });
       nbVoies = empilerVoies(elements);
-      elements.forEach(e => { e.el.style.top = (e.voie * ligne.hauteurVoie) + "px"; });
+      elements.forEach(e => { e.el.style.top = (e.voie * HAUTEUR_VOIE) + "px"; });
     } else {
       const elements = items.map(p => {
         const x0 = anneeVersX(p.debut);
@@ -855,13 +874,13 @@ function construireFrise() {
       });
       nbVoies = empilerVoies(elements);
       elements.forEach(e => {
-        const seg = construireSegment(e.p, e.x1 - e.x0 - 2, ligne.hauteurVoie);
+        const seg = construireSegment(e.p, e.x1 - e.x0 - 2, HAUTEUR_VOIE);
         seg.style.left = (e.x0 + 1) + "px";
-        seg.style.top = (e.voie * ligne.hauteurVoie) + "px";
+        seg.style.top = (e.voie * HAUTEUR_VOIE) + "px";
         groupe.appendChild(seg);
       });
     }
-    const hauteurGroupe = Math.max(nbVoies, 1) * ligne.hauteurVoie;
+    const hauteurGroupe = Math.max(nbVoies, 1) * HAUTEUR_VOIE;
     groupe.style.height = hauteurGroupe + "px";
 
     const lab = document.createElement("div");
@@ -869,8 +888,6 @@ function construireFrise() {
     lab.style.height = hauteurGroupe + "px";
     lab.textContent = ligne.etiquette;
     etq.appendChild(lab);
-
-    lignesConteneur.appendChild(groupe);
   });
 
   const r = document.getElementById("regle");
