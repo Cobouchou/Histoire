@@ -529,7 +529,7 @@ const TYPES = {
   }
   .seg:hover, .seg:focus-visible { opacity: .72; }
   .seg:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; z-index: 2; }
-  .seg:not(.seg-libre)[aria-pressed="true"]::after {
+  .seg[aria-pressed="true"]::after {
     content: ""; position: absolute; inset: 0;
     border: 2px solid var(--ink); border-radius: 4px;
   }
@@ -547,15 +547,8 @@ const TYPES = {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 1px 2px rgba(0,0,0,.25);
   }
-  .seg-libre {
-    padding: 0; background: transparent !important; gap: 6px; overflow: visible;
-  }
-  .seg-libre .seg-libre-barre { flex: none; height: 6px; border-radius: 3px; }
-  .seg-libre .seg-libre-nom {
-    font-size: 11.5px; font-weight: 600; white-space: nowrap;
-    text-shadow: 0 0 4px var(--bg), 0 0 4px var(--bg);
-  }
-  .seg-libre[aria-pressed="true"] .seg-libre-nom { text-decoration: underline; }
+  .seg-libre { overflow: visible; }
+  .seg-libre .seg-libre-nom { font-size: 11.5px; font-weight: 600; white-space: nowrap; }
   .coupure-groupe {
     position: absolute; top: 0; bottom: 0; cursor: help;
     background: repeating-linear-gradient(135deg, var(--card) 0 4px, var(--line) 4px 8px);
@@ -788,18 +781,16 @@ function construireSegment(p, largeur, hauteur) {
 function construireBarreLibre(p, largeurBarre) {
   const b = document.createElement("button");
   b.className = "seg seg-libre";
+  b.style.width = largeurBarre + "px";
+  b.style.background = TYPES[p.type].fond;
   b.title = p.dates + " — " + p.nom;
   b.setAttribute("aria-label", p.nom + ", " + p.dates);
   b.dataset.id = p.id;
-  const barre = document.createElement("span");
-  barre.className = "seg-libre-barre";
-  barre.style.width = largeurBarre + "px";
-  barre.style.background = TYPES[p.type].couleur;
   const nom = document.createElement("span");
   nom.className = "seg-libre-nom";
   nom.style.color = TYPES[p.type].couleur;
   nom.textContent = p.nom;
-  b.append(barre, nom);
+  b.appendChild(nom);
   b.onclick = () => choisir(p.id);
   return b;
 }
@@ -856,25 +847,35 @@ function construireFrise() {
     if (ligne.forme === "libre") {
       const elements = items.map(p => {
         const x0 = anneeVersX(p.debut);
-        const largeurBarre = Math.max(anneeVersX(p.fin) - x0, 4);
+        const largeurBarre = Math.max(anneeVersX(p.fin) - x0, 8);
         const el = construireBarreLibre(p, largeurBarre);
         el.style.left = x0 + "px";
         groupe.appendChild(el);
-        return { el, x0 };
+        return { el, x0, largeurBarre };
       });
-      // La voie tient compte du texte, pas seulement des dates réelles,
-      // puisque le nom peut déborder au-delà de la barre colorée.
-      elements.forEach(e => { e.x1 = e.x0 + e.el.getBoundingClientRect().width + 14; });
+      // La voie tient compte du texte, pas seulement de la barre : le nom
+      // reste toujours affiché et peut déborder au-delà d'une barre étroite
+      // (mesuré sur le span du nom, pas sur le bouton, puisque ce dernier
+      // ne s'élargit pas pour suivre le débordement).
+      elements.forEach(e => {
+        const largeurNom = e.el.querySelector(".seg-libre-nom").getBoundingClientRect().width;
+        e.x1 = e.x0 + Math.max(e.largeurBarre, largeurNom + 16);
+      });
       nbVoies = empilerVoies(elements);
       elements.forEach(e => { e.el.style.top = (e.voie * HAUTEUR_VOIE) + "px"; });
     } else {
+      // x1 reflète les dates réelles, sans largeur minimum : une largeur
+      // minimum appliquée ici pousserait à tort l'entrée suivante qui
+      // commence exactement à la même date sur une voie supplémentaire.
+      // La largeur minimum n'est appliquée qu'à l'affichage, plus bas.
       const elements = items.map(p => {
         const x0 = anneeVersX(p.debut);
-        return { p, x0, x1: Math.max(anneeVersX(p.fin), x0 + 5) };
+        return { p, x0, x1: anneeVersX(p.fin) };
       });
       nbVoies = empilerVoies(elements);
       elements.forEach(e => {
-        const seg = construireSegment(e.p, e.x1 - e.x0 - 2, HAUTEUR_VOIE);
+        const largeur = Math.max(e.x1 - e.x0, 5);
+        const seg = construireSegment(e.p, largeur - 2, HAUTEUR_VOIE);
         seg.style.left = (e.x0 + 1) + "px";
         seg.style.top = (e.voie * HAUTEUR_VOIE) + "px";
         groupe.appendChild(seg);
