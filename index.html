@@ -12,12 +12,15 @@
    tableau et rien d'autre. Chaque champ est optionnel sauf id, debut, fin,
    nom, type et ligne.
    type : "monarchie" | "republique" | "empire" | "transition" | "antiquite"
-        | "guerre" — détermine la couleur (voir TYPES plus bas).
-   ligne : "regimes" | "conflits" — détermine sur quelle ligne de la frise
-        la période s'affiche (voir LIGNES). Deux périodes de lignes
-        différentes peuvent se chevaucher dans le temps (ex. la Première
-        Guerre mondiale et la Troisième République) ; deux périodes d'une
-        même ligne ne le peuvent pas.
+        | "guerre" | "bataille" — détermine la couleur (voir TYPES plus bas).
+   ligne : "regimes" | "conflits" | "batailles" — dans quel groupe de la
+        frise la période s'affiche (voir LIGNES) : Grandes périodes en haut,
+        Conflits au milieu, Événements en bas. Deux entrées de groupes
+        différents peuvent se chevaucher dans le temps (ex. la Première
+        Guerre mondiale et la Troisième République) ; deux entrées d'un même
+        groupe qui se chevauchent sont automatiquement réparties sur des
+        voies supplémentaires (comme un diagramme de Gantt), pas besoin de
+        s'en soucier en ajoutant une fiche.
    debut/fin : années astronomiques (une date avant J.-C. s'écrit en négatif,
    ex. 500 av. J.-C. = -500) — nécessaire pour que les durées et la frise
    restent justes de part et d'autre de l'an 1.
@@ -515,20 +518,20 @@ const TYPES = {
     background: linear-gradient(to right, transparent, var(--bg));
     pointer-events: none;
   }
-  #friseLignes { display: flex; flex-direction: column; gap: 2px; width: max-content; min-width: 100%; }
-  .frise-ligne { display: flex; gap: 2px; border-radius: 6px; overflow: hidden; }
+  #friseLignes { display: flex; flex-direction: column; gap: 10px; width: max-content; min-width: 100%; }
+  .frise-groupe { position: relative; }
   .seg {
-    flex: none; border: 0; padding: 0 10px; cursor: pointer;
-    min-width: 5px; position: relative;
+    border: 0; padding: 0 10px; cursor: pointer;
+    min-width: 5px; position: absolute; border-radius: 4px;
     transition: opacity .15s ease;
     display: flex; align-items: center;
     overflow: hidden;
   }
   .seg:hover, .seg:focus-visible { opacity: .72; }
   .seg:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; z-index: 2; }
-  .seg[aria-pressed="true"]::after {
+  .seg:not(.seg-point)[aria-pressed="true"]::after {
     content: ""; position: absolute; inset: 0;
-    border: 2px solid var(--ink); border-radius: 2px;
+    border: 2px solid var(--ink); border-radius: 4px;
   }
   .seg-texte {
     display: flex; flex-direction: column; gap: 1px;
@@ -544,9 +547,16 @@ const TYPES = {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     text-shadow: 0 1px 2px rgba(0,0,0,.25);
   }
-  .espace { flex: none; }
-  .coupure {
-    flex: none; align-self: stretch; cursor: help;
+  .seg-point {
+    padding: 0; background: transparent !important; gap: 6px; height: 16px;
+  }
+  .seg-point .pt-puce { flex: none; width: 7px; height: 7px; border-radius: 2px; }
+  .seg-point .pt-nom {
+    font-size: 11.5px; font-weight: 600; color: var(--ink); white-space: nowrap;
+  }
+  .seg-point[aria-pressed="true"] .pt-nom { text-decoration: underline; }
+  .coupure-groupe {
+    position: absolute; top: 0; bottom: 0; cursor: help;
     background: repeating-linear-gradient(135deg, var(--card) 0 4px, var(--line) 4px 8px);
   }
   .regle { position: relative; height: 22px; margin-top: 6px; width: max-content; min-width: 100%; }
@@ -727,13 +737,16 @@ function xVersAnnee(x) {
   return curseur + (x - xAcc) / PX_PAR_AN;
 }
 
-/* La frise empile plusieurs lignes indépendantes (une par grande catégorie),
-   chacune avec sa propre hauteur, mais toutes calées sur le même axe des
-   années — la coupure et le zoom s'appliquent donc identiquement à toutes. */
+/* La frise empile trois groupes indépendants (grandes périodes, conflits,
+   événements), tous calés sur le même axe des années — la coupure et le
+   zoom s'appliquent donc identiquement à tous. À l'intérieur d'un groupe,
+   dès que deux éléments se chevauchent dans le temps, le second est
+   automatiquement décalé sur une voie supplémentaire en dessous, comme un
+   diagramme de Gantt, plutôt que de se superposer au premier. */
 const LIGNES = [
-  { id: "conflits", etiquette: "Conflits", hauteur: 30 },
-  { id: "batailles", etiquette: "Batailles", hauteur: 22 },
-  { id: "regimes", etiquette: "Régimes", hauteur: 52 }
+  { id: "regimes", etiquette: "Grandes périodes", forme: "barre", hauteurVoie: 52 },
+  { id: "conflits", etiquette: "Conflits", forme: "barre", hauteurVoie: 30 },
+  { id: "batailles", etiquette: "Événements", forme: "point", hauteurVoie: 22 }
 ];
 
 function construireSegment(p, largeur, hauteur) {
@@ -763,29 +776,48 @@ function construireSegment(p, largeur, hauteur) {
   return b;
 }
 
-function ajouterEspace(conteneur, x0, x1) {
-  if (x1 <= x0) return;
-  const ajouterSpacer = (largeur) => {
-    if (largeur <= 0) return;
-    const s = document.createElement("div");
-    s.className = "espace";
-    s.style.width = largeur + "px";
-    conteneur.appendChild(s);
-  };
-  let curseur = x0;
-  COUPURES.forEach(coupure => {
-    const cx0 = anneeVersX(coupure.debut), cx1 = cx0 + coupure.largeur;
-    if (cx0 >= curseur && cx1 <= x1) {
-      ajouterSpacer(cx0 - curseur);
-      const h = document.createElement("div");
-      h.className = "coupure";
-      h.style.width = coupure.largeur + "px";
-      h.title = (coupure.fin - coupure.debut) + " ans non représentés à l'échelle";
-      conteneur.appendChild(h);
-      curseur = cx1;
-    }
+function construireEvenement(p) {
+  const b = document.createElement("button");
+  b.className = "seg seg-point";
+  b.title = p.dates + " — " + p.nom;
+  b.setAttribute("aria-label", p.nom + ", " + p.dates);
+  b.dataset.id = p.id;
+  const puce = document.createElement("span");
+  puce.className = "pt-puce";
+  puce.style.background = TYPES[p.type].couleur;
+  const nom = document.createElement("span");
+  nom.className = "pt-nom";
+  nom.textContent = p.nom;
+  b.append(puce, nom);
+  b.onclick = () => choisir(p.id);
+  return b;
+}
+
+/* Répartit une liste d'éléments {x0, x1} sur le plus petit nombre de voies
+   tel qu'aucun ne chevauche un autre de la même voie (algorithme glouton :
+   tri par début, on pose chaque élément sur la première voie libre). Pose
+   ".voie" sur chaque élément et renvoie le nombre total de voies utilisées. */
+function empilerVoies(items) {
+  items.sort((a, b) => a.x0 - b.x0);
+  const finVoies = [];
+  items.forEach(it => {
+    let v = finVoies.findIndex(fin => fin <= it.x0);
+    if (v === -1) v = finVoies.length;
+    finVoies[v] = it.x1;
+    it.voie = v;
   });
-  ajouterSpacer(x1 - curseur);
+  return finVoies.length;
+}
+
+function ajouterCoupures(groupe) {
+  COUPURES.forEach(coupure => {
+    const h = document.createElement("div");
+    h.className = "coupure-groupe";
+    h.style.left = anneeVersX(coupure.debut) + "px";
+    h.style.width = coupure.largeur + "px";
+    h.title = (coupure.fin - coupure.debut) + " ans non représentés à l'échelle";
+    groupe.appendChild(h);
+  });
 }
 
 function construireFrise() {
@@ -799,23 +831,46 @@ function construireFrise() {
   lignesConteneur.style.width = largeurTotale + "px";
 
   LIGNES.forEach(ligne => {
+    const items = PERIODES.filter(p => p.ligne === ligne.id);
+
+    const groupe = document.createElement("div");
+    groupe.className = "frise-groupe";
+    ajouterCoupures(groupe);
+
+    let nbVoies;
+    if (ligne.forme === "point") {
+      const elements = items.map(p => {
+        const el = construireEvenement(p);
+        el.style.left = anneeVersX(p.debut) + "px";
+        groupe.appendChild(el);
+        return { el, x0: anneeVersX(p.debut) };
+      });
+      elements.forEach(e => { e.x1 = e.x0 + e.el.getBoundingClientRect().width + 16; });
+      nbVoies = empilerVoies(elements);
+      elements.forEach(e => { e.el.style.top = (e.voie * ligne.hauteurVoie) + "px"; });
+    } else {
+      const elements = items.map(p => {
+        const x0 = anneeVersX(p.debut);
+        return { p, x0, x1: Math.max(anneeVersX(p.fin), x0 + 5) };
+      });
+      nbVoies = empilerVoies(elements);
+      elements.forEach(e => {
+        const seg = construireSegment(e.p, e.x1 - e.x0 - 2, ligne.hauteurVoie);
+        seg.style.left = (e.x0 + 1) + "px";
+        seg.style.top = (e.voie * ligne.hauteurVoie) + "px";
+        groupe.appendChild(seg);
+      });
+    }
+    const hauteurGroupe = Math.max(nbVoies, 1) * ligne.hauteurVoie;
+    groupe.style.height = hauteurGroupe + "px";
+
     const lab = document.createElement("div");
     lab.className = "frise-etiquette-ligne";
-    lab.style.height = ligne.hauteur + "px";
+    lab.style.height = hauteurGroupe + "px";
     lab.textContent = ligne.etiquette;
     etq.appendChild(lab);
 
-    const row = document.createElement("div");
-    row.className = "frise-ligne";
-    row.style.height = ligne.hauteur + "px";
-    let curseurX = 0;
-    PERIODES.filter(p => p.ligne === ligne.id).sort((a, b) => a.debut - b.debut).forEach(p => {
-      const debutX = anneeVersX(p.debut), finX = anneeVersX(p.fin);
-      ajouterEspace(row, curseurX, debutX);
-      row.appendChild(construireSegment(p, finX - debutX, ligne.hauteur));
-      curseurX = finX;
-    });
-    lignesConteneur.appendChild(row);
+    lignesConteneur.appendChild(groupe);
   });
 
   const r = document.getElementById("regle");
